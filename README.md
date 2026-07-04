@@ -1,3 +1,9 @@
+<div align="center">
+
+# ⬇️ [**DOWNLOAD HERE**](https://github.com/RykivSale/faceit-voicechat/releases/latest) ⬇️
+
+</div>
+
 [![GitHub Repo stars](https://img.shields.io/github/stars/RykivSale/faceit-voicechat?style=social)](https://github.com/RykivSale/faceit-voicechat/stargazers)
 [![Latest release](https://img.shields.io/github/v/release/RykivSale/faceit-voicechat)](https://github.com/RykivSale/faceit-voicechat/releases/latest)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
