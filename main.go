@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/klauspost/compress/zstd"
 	"github.com/markus-wa/demoinfocs-golang/v5/pkg/demoinfocs"
 	"github.com/markus-wa/demoinfocs-golang/v5/pkg/demoinfocs/common"
 	"github.com/markus-wa/demoinfocs-golang/v5/pkg/demoinfocs/events"
@@ -75,13 +76,32 @@ func saveConfig(cfg config) error {
 }
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: right-click a .dem file -> Open with... -> this program.")
+	reader := bufio.NewReader(os.Stdin)
+
+	var rawPath string
+	if len(os.Args) >= 2 {
+		rawPath = os.Args[1]
+	} else {
+		fmt.Print("Enter path to .dem or .dem.zst file: ")
+		line, _ := reader.ReadString('\n')
+		rawPath = strings.Trim(strings.TrimSpace(line), `"`)
+
+		if rawPath == "" {
+			fmt.Println("No file path given.")
+			waitForExit()
+			return
+		}
+	}
+
+	demoPath, cleanup, err := resolveDemoPath(rawPath)
+	if err != nil {
+		fmt.Println("Failed to open file:", err)
 		waitForExit()
 		return
 	}
-
-	demoPath := os.Args[1]
+	if cleanup != nil {
+		defer cleanup()
+	}
 
 	ctMask, tMask, err := parseDemo(demoPath)
 	if err != nil {
@@ -91,7 +111,6 @@ func main() {
 	}
 
 	cfg := loadConfig()
-	reader := bufio.NewReader(os.Stdin)
 
 	for {
 		fmt.Println()
@@ -115,6 +134,49 @@ func main() {
 			fmt.Println("Unknown option.")
 		}
 	}
+}
+
+// resolveDemoPath returns a path to a plain .dem file, transparently decompressing
+// rawPath first if it's a .zst archive. The returned cleanup func (if non-nil) removes
+// the temporary decompressed file and must be called once the caller is done with it.
+func resolveDemoPath(rawPath string) (path string, cleanup func(), err error) {
+	if !strings.EqualFold(filepath.Ext(rawPath), ".zst") {
+		return rawPath, nil, nil
+	}
+
+	fmt.Println("Decompressing .zst archive...")
+
+	in, err := os.Open(rawPath)
+	if err != nil {
+		return "", nil, err
+	}
+	defer in.Close()
+
+	dec, err := zstd.NewReader(in)
+	if err != nil {
+		return "", nil, err
+	}
+	defer dec.Close()
+
+	tmpDir, err := os.MkdirTemp("", "faceit-voicechat-*")
+	if err != nil {
+		return "", nil, err
+	}
+
+	outPath := filepath.Join(tmpDir, strings.TrimSuffix(filepath.Base(rawPath), filepath.Ext(rawPath)))
+	out, err := os.Create(outPath)
+	if err != nil {
+		os.RemoveAll(tmpDir)
+		return "", nil, err
+	}
+	defer out.Close()
+
+	if _, err := io.Copy(out, dec); err != nil {
+		os.RemoveAll(tmpDir)
+		return "", nil, err
+	}
+
+	return outPath, func() { os.RemoveAll(tmpDir) }, nil
 }
 
 func parseDemo(demoPath string) (ctMask uint32, tMask uint32, err error) {
