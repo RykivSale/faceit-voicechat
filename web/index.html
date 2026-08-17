@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>LET'S START</title>
+  <link rel="icon" type="image/png" href="/vendor/favicon.png" />
+  <link rel="apple-touch-icon" href="/vendor/icon.png" />
   <link rel="stylesheet" href="/vendor/bootstrap.min.css" />
   <link rel="stylesheet" href="/vendor/bootstrap-icons.min.css" />
   <link rel="stylesheet" href="/vendor/inter.css" />
@@ -91,9 +93,15 @@
       font-weight: 700;
     }
     .lang-flag {
-      font-size: 1.35rem;
       line-height: 1;
-      padding: 0.4rem 0.65rem;
+      padding: 0.4rem 0.55rem;
+    }
+    .lang-flag svg {
+      display: block;
+      width: 1.5rem;
+      height: 1rem;
+      border-radius: 2px;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
     }
     .drop-zone {
       min-height: 240px;
@@ -280,8 +288,12 @@
       <div class="site-nav">
         <h1 class="h3 mb-0 fw-bold" id="appTitle"></h1>
         <div class="btn-group" role="group" aria-label="Language">
-          <button class="btn btn-outline-dark lang-flag" id="langRu" type="button" title="Русский">🇷🇺</button>
-          <button class="btn btn-outline-dark lang-flag" id="langEn" type="button" title="English">🇬🇧</button>
+          <button class="btn btn-outline-dark lang-flag" id="langRu" type="button" title="Русский" aria-label="Русский">
+            <svg viewBox="0 0 9 6" aria-hidden="true"><rect width="9" height="2" fill="#fff"/><rect y="2" width="9" height="2" fill="#0039a6"/><rect y="4" width="9" height="2" fill="#d52b1e"/></svg>
+          </button>
+          <button class="btn btn-outline-dark lang-flag" id="langEn" type="button" title="English" aria-label="English">
+            <svg viewBox="0 0 60 30" aria-hidden="true"><rect width="60" height="30" fill="#012169"/><path d="M0,0 60,30 M60,0 0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 60,30 M60,0 0,30" stroke="#c8102e" stroke-width="2"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#c8102e" stroke-width="6"/></svg>
+          </button>
         </div>
         <button class="btn btn-dark" id="quitBtn" type="button">
           <i class="bi bi-x-lg me-1"></i><span id="quitLabel"></span>
