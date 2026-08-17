@@ -22,7 +22,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/RykivSale/faceit-voicechat?style=social)](https://github.com/RykivSale/faceit-voicechat/stargazers)
 [![Downloads](https://img.shields.io/github/downloads/RykivSale/faceit-voicechat/total?label=downloads&logo=github)](https://github.com/RykivSale/faceit-voicechat/releases)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
-[![Donate ETH/USDT](https://img.shields.io/badge/%E2%98%95%20donate-ETH%20%2F%20USDT-e00000)](#кинь-на-кофе)
+[![Кинь на кофе](https://img.shields.io/badge/%E2%98%95%20donate-dalink-e00000)](https://dalink.to/rykisosali)
 
 <br>
 
@@ -116,13 +116,23 @@ Fork of [boris-on/faceit-voicechat](https://github.com/boris-on/faceit-voicechat
 | UI | Prints and exits | **Local page** (drag-drop, past games) |
 | Updates | None | Checks GitHub Releases |
 
-**⭐ If this saves you a tilt-queue — star the repo.** Или [кинь на кофе](#кинь-на-кофе).
+**⭐ If this saves you a tilt-queue — star the repo.** Или [кинь на кофе](https://dalink.to/rykisosali).
 
 ## Кинь на кофе
 
 Прога бесплатная. Звезда — уже кайф. Если совсем зашла — можно кинуть на кофе.
 
-**EVM-кошелёк** (ETH, USDT ERC-20, тот же адрес на Polygon / BSC / Arbitrum):
+<div align="center">
+
+<a href="https://dalink.to/rykisosali">
+  <img src="https://img.shields.io/badge/%E2%98%95%20%20%D0%9A%D0%98%D0%9D%D0%AC%20%D0%9D%D0%90%20%D0%9A%D0%9E%D0%A4%D0%95-dalink.to-e00000?style=for-the-badge" alt="Кинь на кофе — dalink" height="48">
+</a>
+
+**[☕  dalink.to/rykisosali](https://dalink.to/rykisosali)**
+
+</div>
+
+Или криптой напрямую. **EVM** (ETH, USDT ERC-20, тот же адрес на Polygon / BSC / Arbitrum):
 
 ```
 0x6DE7D78Bdd175B3b35343a2B9473444D3f6AeA16
