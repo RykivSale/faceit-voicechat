@@ -115,6 +115,7 @@ func runWeb(rawPath string) {
 	mux.HandleFunc("/api/games", app.handleGames)
 	mux.HandleFunc("/api/games/score", app.handleGameScore)
 	mux.HandleFunc("/api/games/open", app.handleGameOpen)
+	mux.HandleFunc("/api/update", app.handleUpdate)
 	mux.HandleFunc("/api/quit", app.handleQuit)
 
 	srv := &http.Server{Handler: mux}
@@ -132,6 +133,15 @@ func runWeb(rawPath string) {
 	fmt.Println("Leave this window open while you use it. Press Ctrl+C to quit.")
 	fmt.Println()
 	openBrowser(url)
+
+	if app.cfg.CheckUpdates {
+		go func() {
+			check := checkUpdatesFn()
+			if check.Newer {
+				printUpdateBanner(check)
+			}
+		}()
+	}
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt)
@@ -374,6 +384,21 @@ func (a *webApp) handleCopy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, a.snapshotLocked())
+}
+
+func (a *webApp) handleUpdate(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	a.mu.Lock()
+	enabled := a.cfg.CheckUpdates
+	a.mu.Unlock()
+	if !enabled {
+		writeJSON(w, updateView{Current: appVersion, URL: githubLatestURL})
+		return
+	}
+	writeJSON(w, toUpdateView(checkUpdatesFn()))
 }
 
 func (a *webApp) handleQuit(w http.ResponseWriter, r *http.Request) {

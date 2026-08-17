@@ -177,7 +177,18 @@
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
-    .status-banner .status-path {
+    .status-banner .btn-update {
+      background: #fff;
+      color: #e00000;
+      border: none;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .status-banner .btn-update:hover {
+      background: #ffe8e8;
+      color: #b00000;
+    }
       font-family: ui-monospace, "Cascadia Code", Consolas, "SF Mono", monospace;
       font-size: 13px;
       background: rgba(0, 0, 0, 0.28);
@@ -302,6 +313,7 @@
       <img class="brand-hero" src="/vendor/logo.png" alt="" />
     </header>
 
+    <div id="updateBanner" class="d-none"></div>
     <div id="banners"></div>
 
     <div class="mb-4" id="dropCard">
@@ -549,7 +561,10 @@
         overlay: "Читаем демку, это может занять минуту…",
         quitDone: "Сервер остановлен, вкладку можно закрыть.",
         foot: "Работает только на этом компьютере (127.0.0.1). Не закрывай окно программы, пока открыта страница.",
-        err: "Ошибка"
+        err: "Ошибка",
+        updateTitle: "Вышла новая версия",
+        updateBody: "У тебя v{current}, свежак v{latest}.",
+        updateBtn: "Скачать"
       },
       en: {
         title: "LET'S START",
@@ -614,7 +629,10 @@
         overlay: "Reading the demo, this can take a minute…",
         quitDone: "Server stopped. You can close this tab.",
         foot: "This page is local only (127.0.0.1). Leave the program window open while you use it.",
-        err: "Error"
+        err: "Error",
+        updateTitle: "New version available",
+        updateBody: "You have v{current}. Latest is v{latest}.",
+        updateBtn: "Download"
       }
     };
 
@@ -626,6 +644,7 @@
     let gamesCache = null;
     let gamesFolder = "";
     let gamesLoading = false;
+    let updateInfo = null;
     const gameScores = {};
     const openScoreIds = new Set();
 
@@ -680,7 +699,36 @@
       $("langEn").classList.toggle("btn-outline-dark", lang !== "en");
       $("dropTitle").textContent = x.dropTitle;
       $("dropHint").textContent = hasFolder() ? x.dropHint : x.dropLocked;
+      paintUpdate();
       if (state) render(state);
+    }
+
+    function paintUpdate() {
+      const box = $("updateBanner");
+      if (!updateInfo || !updateInfo.newer) {
+        box.className = "d-none";
+        box.innerHTML = "";
+        return;
+      }
+      const x = t();
+      const body = x.updateBody.replace("{current}", updateInfo.current).replace("{latest}", updateInfo.latest);
+      box.className = "status-banner mb-4";
+      box.innerHTML = `<div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div>
+          <div class="status-title">${escapeHtml(x.updateTitle)}</div>
+          <div class="mt-1">${escapeHtml(body)}</div>
+        </div>
+        <a class="btn btn-update" href="${escapeAttr(updateInfo.url)}" target="_blank" rel="noopener">${escapeHtml(x.updateBtn)}</a>
+      </div>`;
+    }
+
+    async function checkUpdate() {
+      try {
+        updateInfo = await api("/api/update");
+        paintUpdate();
+      } catch (_) {
+        updateInfo = null;
+      }
     }
 
     function banner(kind, html) {
@@ -1095,6 +1143,7 @@
     refresh().catch((e) => {
       $("banners").innerHTML = banner("err", t().err + ": " + escapeHtml(e.message));
     });
+    checkUpdate();
   </script>
 </body>
 </html>

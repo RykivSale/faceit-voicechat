@@ -36,6 +36,9 @@ func TestHandleIndexIncludesAPIAndAssets(t *testing.T) {
 	if !strings.Contains(body, "/api/games") {
 		t.Fatal("index html missing past games api")
 	}
+	if !strings.Contains(body, "/api/update") || !strings.Contains(body, `id="updateBanner"`) {
+		t.Fatal("index html should load the update banner")
+	}
 }
 
 func TestHandleStateEmpty(t *testing.T) {
@@ -271,3 +274,53 @@ func TestHandleBrowseCancelledLeavesFolderEmpty(t *testing.T) {
 		t.Fatalf("expected empty folder, got %q", got.Config.GameFolder)
 	}
 }
+
+func TestHandleUpdateReportsNewerRelease(t *testing.T) {
+	old := checkUpdatesFn
+	checkUpdatesFn = func() updateCheck {
+		return updateCheck{Current: "1.2.2", Latest: "1.2.3", URL: "https://example/latest", Newer: true}
+	}
+	t.Cleanup(func() { checkUpdatesFn = old })
+
+	app := &webApp{cfg: defaultConfig(), shutdown: make(chan struct{})}
+	r := httptest.NewRequest(http.MethodGet, "/api/update", nil)
+	w := httptest.NewRecorder()
+	app.handleUpdate(w, r)
+	if w.Code != 200 {
+		t.Fatalf("status %d body=%s", w.Code, w.Body.String())
+	}
+	var got updateView
+	if err := json.Unmarshal(w.Body.Bytes(), &got); err != nil {
+		t.Fatal(err)
+	}
+	if !got.Newer || got.Latest != "1.2.3" || got.Current != "1.2.2" {
+		t.Fatalf("%+v", got)
+	}
+}
+
+func TestHandleUpdateSkippedWhenDisabled(t *testing.T) {
+	old := checkUpdatesFn
+	checkUpdatesFn = func() updateCheck {
+		t.Fatal("should not hit GitHub when auto-check is off")
+		return updateCheck{}
+	}
+	t.Cleanup(func() { checkUpdatesFn = old })
+
+	cfg := defaultConfig()
+	cfg.CheckUpdates = false
+	app := &webApp{cfg: cfg, shutdown: make(chan struct{})}
+	r := httptest.NewRequest(http.MethodGet, "/api/update", nil)
+	w := httptest.NewRecorder()
+	app.handleUpdate(w, r)
+	if w.Code != 200 {
+		t.Fatalf("status %d", w.Code)
+	}
+	var got updateView
+	if err := json.Unmarshal(w.Body.Bytes(), &got); err != nil {
+		t.Fatal(err)
+	}
+	if got.Newer {
+		t.Fatalf("expected no update prompt, got %+v", got)
+	}
+}
+

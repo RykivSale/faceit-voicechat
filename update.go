@@ -15,8 +15,8 @@ import (
 
 // appVersion is the version of this build. Override at compile time with:
 //
-//	go build -ldflags "-X main.appVersion=1.2.2"
-var appVersion = "1.2.2"
+//	go build -ldflags "-X main.appVersion=1.2.3"
+var appVersion = "1.2.3"
 
 const (
 	githubOwner = "RykivSale"
@@ -28,6 +28,7 @@ var (
 	githubAPIURL    = "https://api.github.com/repos/" + githubOwner + "/" + githubRepo + "/releases/latest"
 
 	updateHTTPTimeout = 6 * time.Second
+	checkUpdatesFn    = doUpdateCheck
 )
 
 type updateCheck struct {
@@ -36,6 +37,28 @@ type updateCheck struct {
 	URL     string
 	Newer   bool
 	Err     error
+}
+
+type updateView struct {
+	Current string `json:"current"`
+	Latest  string `json:"latest"`
+	URL     string `json:"url"`
+	Newer   bool   `json:"newer"`
+	Error   string `json:"error,omitempty"`
+}
+
+func toUpdateView(check updateCheck) updateView {
+	v := updateView{
+		Current: check.Current,
+		Latest:  check.Latest,
+		URL:     check.URL,
+		Newer:   check.Newer,
+	}
+	if check.Err != nil {
+		v.Error = check.Err.Error()
+		v.Newer = false
+	}
+	return v
 }
 
 func startUpdateCheck() <-chan updateCheck {
