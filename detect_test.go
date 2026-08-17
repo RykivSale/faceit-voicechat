@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"os"
+	"path/filepath"
+	"testing"
+)
 
 func TestParseLibraryFolders(t *testing.T) {
 	vdf := `"libraryfolders"
@@ -30,5 +34,17 @@ func TestLooksLikeCSGOFolder(t *testing.T) {
 	p := `C:\Program Files (x86)\Steam\steamapps\common\Counter-Strike Global Offensive\game\csgo`
 	if !looksLikeCSGOFolder(p) {
 		t.Fatalf("expected %q to look like csgo folder", p)
+	}
+}
+
+func TestNormalizeGameFolderWalksIntoCSGO(t *testing.T) {
+	root := t.TempDir()
+	csgo := filepath.Join(root, "Counter-Strike Global Offensive", "game", "csgo")
+	if err := os.MkdirAll(csgo, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	got := normalizeGameFolder(root)
+	if got != csgo {
+		t.Fatalf("got %q want %q", got, csgo)
 	}
 }

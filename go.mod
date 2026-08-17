@@ -5,6 +5,7 @@ go 1.25.0
 require (
 	github.com/klauspost/compress v1.19.0
 	github.com/markus-wa/demoinfocs-golang/v5 v5.2.0
+	google.golang.org/protobuf v1.36.11
 )
 
 require (
@@ -17,5 +18,4 @@ require (
 	github.com/oklog/ulid/v2 v2.1.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/exp v0.0.0-20260312153236-7ab1446f8b90 // indirect
-	google.golang.org/protobuf v1.36.11 // indirect
 )

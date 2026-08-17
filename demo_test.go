@@ -35,6 +35,19 @@ func TestPlaydemoName(t *testing.T) {
 	}
 }
 
+func TestPlaydemoCommand(t *testing.T) {
+	folder := `/games/csgo`
+	if got := playdemoCommand(folder, `/games/csgo/faceit.dem`); got != "playdemo faceit" {
+		t.Fatalf("root=%q", got)
+	}
+	if got := playdemoCommand(folder, `/games/csgo/replays/last.dem`); got != "playdemo replays/last" {
+		t.Fatalf("replay=%q", got)
+	}
+	if got := playdemoCommand(folder, `/tmp/upload.dem`); got != "playdemo upload" {
+		t.Fatalf("outside=%q", got)
+	}
+}
+
 func TestParseListIndex(t *testing.T) {
 	if parseListIndex("2", 3) != 1 {
 		t.Fatal("expected 1")

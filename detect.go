@@ -10,6 +10,8 @@ import (
 
 var libraryPathRe = regexp.MustCompile(`(?i)"path"\s+"([^"]+)"`)
 
+var detectCS2FoldersFn = detectCS2Folders
+
 func detectCS2Folders() []string {
 	seen := make(map[string]struct{})
 	found := []string{}
@@ -190,4 +192,26 @@ func looksLikeCSGOFolder(path string) bool {
 		return true
 	}
 	return false
+}
+
+func normalizeGameFolder(path string) string {
+	path = filepath.Clean(strings.TrimSpace(path))
+	if path == "" || path == "." {
+		return path
+	}
+	if looksLikeCSGOFolder(path) {
+		return path
+	}
+	for _, rel := range []string{
+		filepath.Join("game", "csgo"),
+		"csgo",
+		filepath.Join("Counter-Strike Global Offensive", "game", "csgo"),
+	} {
+		cand := filepath.Join(path, rel)
+		info, err := os.Stat(cand)
+		if err == nil && info.IsDir() {
+			return cand
+		}
+	}
+	return path
 }

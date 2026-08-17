@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -19,10 +20,12 @@ import (
 	"time"
 )
 
-//go:embed web/index.html
+//go:embed web
 var webFS embed.FS
 
 const maxDemoUpload = 1 << 30 // 1 GiB
+
+var errBadFolder = errors.New("that folder does not exist")
 
 type webApp struct {
 	mu       sync.Mutex
@@ -94,12 +97,24 @@ func runWeb(rawPath string) {
 	}
 
 	mux := http.NewServeMux()
+	webRoot, err := fs.Sub(webFS, "web")
+	if err != nil {
+		fmt.Println("Failed to load web assets:", err)
+		waitForExit()
+		return
+	}
+	mux.Handle("/vendor/", http.FileServer(http.FS(webRoot)))
 	mux.HandleFunc("/", app.handleIndex)
 	mux.HandleFunc("/api/state", app.handleState)
 	mux.HandleFunc("/api/demo", app.handleDemo)
 	mux.HandleFunc("/api/config", app.handleConfig)
 	mux.HandleFunc("/api/copy", app.handleCopy)
 	mux.HandleFunc("/api/detect", app.handleDetect)
+	mux.HandleFunc("/api/find", app.handleFind)
+	mux.HandleFunc("/api/browse", app.handleBrowse)
+	mux.HandleFunc("/api/games", app.handleGames)
+	mux.HandleFunc("/api/games/score", app.handleGameScore)
+	mux.HandleFunc("/api/games/open", app.handleGameOpen)
 	mux.HandleFunc("/api/quit", app.handleQuit)
 
 	srv := &http.Server{Handler: mux}
@@ -162,6 +177,68 @@ func (a *webApp) handleDetect(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, a.snapshot())
 }
 
+func (a *webApp) handleFind(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	found := detectCS2FoldersFn()
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	if len(found) > 0 {
+		if err := a.applyGameFolderLocked(found[0]); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+	}
+	writeJSON(w, a.snapshotLocked())
+}
+
+func (a *webApp) handleBrowse(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	path, err := pickFolderFn()
+	if err != nil {
+		if errors.Is(err, errPickCancelled) {
+			writeJSON(w, a.snapshot())
+			return
+		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	if err := a.applyGameFolderLocked(path); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	writeJSON(w, a.snapshotLocked())
+}
+
+func (a *webApp) applyGameFolderLocked(folder string) error {
+	folder = strings.Trim(strings.TrimSpace(folder), `"`)
+	if folder != "" {
+		folder = normalizeGameFolder(folder)
+		info, err := os.Stat(folder)
+		if err != nil || !info.IsDir() {
+			return errBadFolder
+		}
+	}
+	a.cfg.GameFolder = folder
+	a.copied = false
+	a.copiedTo = ""
+	a.copyErr = ""
+	if err := saveConfig(a.cfg); err != nil {
+		return err
+	}
+	if a.parsed {
+		a.tryCopyLocked()
+	}
+	return nil
+}
+
 func (a *webApp) handleDemo(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -181,6 +258,14 @@ func (a *webApp) handleDemo(w http.ResponseWriter, r *http.Request) {
 
 	if !isDemoFilename(hdr.Filename) {
 		http.Error(w, "file must be .dem or .dem.zst", http.StatusBadRequest)
+		return
+	}
+
+	a.mu.Lock()
+	folder := a.cfg.GameFolder
+	a.mu.Unlock()
+	if folder == "" {
+		http.Error(w, "set the CS2 game folder first", http.StatusBadRequest)
 		return
 	}
 
@@ -243,20 +328,9 @@ func (a *webApp) handleConfig(w http.ResponseWriter, r *http.Request) {
 	defer a.mu.Unlock()
 
 	if body.GameFolder != nil {
-		folder := strings.Trim(strings.TrimSpace(*body.GameFolder), `"`)
-		if folder != "" {
-			info, err := os.Stat(folder)
-			if err != nil || !info.IsDir() {
-				http.Error(w, "that folder does not exist", http.StatusBadRequest)
-				return
-			}
-		}
-		a.cfg.GameFolder = folder
-		a.copied = false
-		a.copiedTo = ""
-		a.copyErr = ""
-		if a.parsed {
-			a.tryCopyLocked()
+		if err := a.applyGameFolderLocked(*body.GameFolder); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
 	}
 	if len(body.Keys) > 0 {
@@ -399,13 +473,17 @@ func (a *webApp) snapshotLocked() stateResponse {
 	}
 	if a.parsed {
 		view.Bind = bindCommand(a.cfg, a.ctMask, a.tMask)
-		view.Playdemo = "playdemo " + playdemoName(a.demoPath)
+		src := a.demoPath
+		if a.copied && a.copiedTo != "" {
+			src = a.copiedTo
+		}
+		view.Playdemo = playdemoCommand(a.cfg.GameFolder, src)
 	}
 	looksLike := a.cfg.GameFolder == "" || looksLikeCSGOFolder(a.cfg.GameFolder)
 	return stateResponse{
 		Config:              a.cfg,
 		Demo:                view,
-		DetectedFolders:     detectCS2Folders(),
+		DetectedFolders:     detectCS2FoldersFn(),
 		LooksLikeGameFolder: looksLike,
 	}
 }

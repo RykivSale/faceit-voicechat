@@ -111,6 +111,23 @@ func playdemoName(demoPath string) string {
 	return strings.TrimSuffix(base, filepath.Ext(base))
 }
 
+func playdemoCommand(gameFolder, demoPath string) string {
+	name := playdemoName(demoPath)
+	if gameFolder == "" || demoPath == "" {
+		return "playdemo " + name
+	}
+	rel, err := filepath.Rel(gameFolder, demoPath)
+	if err != nil {
+		return "playdemo " + name
+	}
+	rel = filepath.ToSlash(rel)
+	if rel == "." || strings.HasPrefix(rel, "../") {
+		return "playdemo " + name
+	}
+	rel = strings.TrimSuffix(rel, filepath.Ext(rel))
+	return "playdemo " + rel
+}
+
 func copyDemoToGameFolder(cfg config, demoPath string) (string, error) {
 	if cfg.GameFolder == "" {
 		return "", fmt.Errorf("game folder is not set")

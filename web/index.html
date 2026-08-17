@@ -3,261 +3,536 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>faceit-voicechat</title>
+  <title>LET'S START</title>
+  <link rel="stylesheet" href="/vendor/bootstrap.min.css" />
+  <link rel="stylesheet" href="/vendor/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="/vendor/inter.css" />
   <style>
     :root {
-      --bg: #0b0c10;
-      --bg-2: #12141b;
-      --card: #171a22;
-      --line: #2a2f3c;
-      --text: #f4f1ea;
-      --muted: #9aa3b5;
-      --orange: #ff5a1f;
-      --orange-2: #ff8a4c;
-      --green: #3dd68c;
-      --red: #ff5d73;
-      --key: #232736;
+      --bs-primary: #e00000;
+      --bs-primary-rgb: 224, 0, 0;
+      --bs-link-color: #e00000;
+      --bs-link-hover-color: #b80000;
     }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; }
     body {
-      font-family: "Segoe UI", system-ui, sans-serif;
-      background:
-        radial-gradient(1200px 500px at 10% -10%, rgba(255, 90, 31, 0.16), transparent 50%),
-        radial-gradient(900px 400px at 100% 0%, rgba(61, 214, 140, 0.08), transparent 45%),
-        var(--bg);
-      color: var(--text);
+      font-family: Inter, system-ui, sans-serif;
+      background: #f5f5f5;
+      color: #111;
     }
-    .wrap { max-width: 920px; margin: 0 auto; padding: 28px 20px 64px; }
-    header {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      gap: 16px; margin-bottom: 22px;
+    .page-wrap {
+      max-width: 1680px;
+      position: relative;
+      overflow: visible;
     }
-    .brand { display: flex; gap: 14px; align-items: center; }
-    .mark {
-      width: 44px; height: 44px; border-radius: 10px;
-      background: linear-gradient(135deg, var(--orange), #c43a00);
-      display: grid; place-items: center; font-weight: 800; letter-spacing: -0.04em;
-      box-shadow: 0 8px 24px rgba(255, 90, 31, 0.28);
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 72px;
+      padding-right: min(280px, 30vw);
+      margin-bottom: 0.75rem;
+      position: relative;
     }
-    h1 { margin: 0; font-size: 22px; letter-spacing: -0.03em; }
-    .sub { color: var(--muted); font-size: 14px; margin-top: 2px; }
-    .tools { display: flex; gap: 8px; flex-wrap: wrap; }
-    button, .btn {
-      appearance: none; border: 1px solid var(--line); background: var(--key);
-      color: var(--text); border-radius: 10px; padding: 10px 14px; cursor: pointer;
-      font: inherit; font-weight: 600;
+    .site-nav {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem 1rem;
+      position: relative;
+      z-index: 3;
     }
-    button:hover, .btn:hover { border-color: #42485a; }
-    button.primary {
-      background: var(--orange); border-color: transparent; color: #1a0900;
+    .brand-hero {
+      position: absolute;
+      top: -8px;
+      right: 0;
+      width: min(600px, 68vw);
+      height: auto;
+      z-index: 0;
+      pointer-events: none;
+      filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.14));
     }
-    button.primary:hover { filter: brightness(1.05); }
-    button.ghost { background: transparent; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .card {
-      background: var(--card); border: 1px solid var(--line); border-radius: 16px;
-      padding: 18px; margin-bottom: 14px;
+    #dropCard {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 1.5rem;
     }
-    .card h2 { margin: 0 0 10px; font-size: 15px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-    .drop {
-      border: 1.5px dashed #3a4154; border-radius: 14px; padding: 28px 16px;
-      text-align: center; color: var(--muted); cursor: pointer;
-      transition: border-color .15s, background .15s;
+    @media (max-width: 768px) {
+      .site-header {
+        padding-right: min(200px, 48vw);
+        min-height: 0;
+      }
+      .brand-hero {
+        width: min(440px, 90vw);
+        top: 40px;
+        right: -24px;
+      }
     }
-    .drop.over, .drop:hover { border-color: var(--orange); background: rgba(255, 90, 31, 0.06); }
-    .drop strong { color: var(--text); }
-    .file-pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--key); border: 1px solid var(--line); border-radius: 999px;
-      padding: 8px 12px; margin-top: 12px; color: var(--text); font-size: 13px;
+    #result,
+    #mainAccordion {
+      position: relative;
+      z-index: 1;
     }
-    .cmd {
-      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-      background: #0e1016; border: 1px solid var(--line); border-radius: 12px;
-      padding: 12px 14px; overflow-x: auto; white-space: pre-wrap; word-break: break-word;
-      font-size: 13px; line-height: 1.45;
+    .btn-primary {
+      --bs-btn-bg: #e00000;
+      --bs-btn-border-color: #e00000;
+      --bs-btn-hover-bg: #c40000;
+      --bs-btn-hover-border-color: #c40000;
+      --bs-btn-active-bg: #b00000;
+      --bs-btn-active-border-color: #b00000;
+      --bs-btn-disabled-bg: #e00000;
+      --bs-btn-disabled-border-color: #e00000;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
     }
-    .row { display: flex; gap: 8px; align-items: stretch; }
-    .row .cmd { flex: 1; }
-    .keys { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
-    .keycap {
-      background: var(--key); border: 1px solid var(--line); border-radius: 12px;
-      padding: 10px 12px; min-width: 120px;
+    .btn-dark {
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
     }
-    .keycap kbd {
-      display: inline-block; background: #0e1016; border: 1px solid #3a4154;
-      border-bottom-width: 3px; border-radius: 7px; padding: 2px 8px;
-      font-family: inherit; font-weight: 700;
+    .lang-flag {
+      font-size: 1.35rem;
+      line-height: 1;
+      padding: 0.4rem 0.65rem;
     }
-    .keycap span { display: block; color: var(--muted); font-size: 12px; margin-top: 6px; }
-    .hint {
-      color: var(--muted); font-size: 13px; line-height: 1.5; margin: 8px 0 0;
+    .drop-zone {
+      min-height: 240px;
+      max-width: min(779px, 100%);
+      padding: 2.5rem 1.5rem;
+      cursor: pointer;
+      background: #fff;
     }
-    .banner {
-      border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; font-size: 14px;
-      border: 1px solid var(--line);
+    @media (min-width: 768px) {
+      .drop-zone {
+        max-width: min(779px, calc(100% - 193px));
+      }
     }
-    .banner.ok { background: rgba(61, 214, 140, 0.1); border-color: rgba(61, 214, 140, 0.35); }
-    .banner.warn { background: rgba(255, 90, 31, 0.1); border-color: rgba(255, 90, 31, 0.35); }
-    .banner.err { background: rgba(255, 93, 115, 0.1); border-color: rgba(255, 93, 115, 0.35); }
-    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
-    input[type="text"] {
-      width: 100%; background: #0e1016; color: var(--text); border: 1px solid var(--line);
-      border-radius: 10px; padding: 10px 12px; font: inherit;
+    @media (min-width: 1200px) {
+      .drop-zone {
+        max-width: min(862px, calc(100% - 221px));
+        min-height: 260px;
+      }
     }
-    input[type="text"]:focus { outline: 2px solid rgba(255, 90, 31, 0.45); border-color: var(--orange); }
-    .found { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-    .found button {
-      text-align: left; font-weight: 500; font-size: 13px;
+    .drop-zone.over {
+      border-color: #e00000 !important;
+      background: rgba(224, 0, 0, 0.04);
+    }
+    .drop-zone.drop-loaded {
+      min-height: 180px;
+      padding: 2rem 1.5rem;
+      border-style: solid;
+      border-color: #1a1a1a !important;
+      background: #fafafa;
+    }
+    .drop-zone.drop-loaded #dropIcon {
+      color: #111;
+    }
+    .drop-file {
+      display: inline-block;
+      max-width: 100%;
+      margin-top: 0.75rem;
+      padding: 0.45rem 0.85rem;
+      background: #1a1a1a;
+      color: #fff;
+      border-radius: 8px;
+      font-family: ui-monospace, "Cascadia Code", Consolas, "SF Mono", monospace;
+      font-size: 14px;
+      font-weight: 600;
       word-break: break-all;
     }
-    .found button.active { border-color: var(--orange); }
-    .key-inputs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    @media (max-width: 640px) { .key-inputs { grid-template-columns: 1fr; } .row { flex-direction: column; } }
-    ol.howto { margin: 0; padding-left: 18px; color: var(--muted); }
-    ol.howto li { margin: 8px 0; }
-    ol.howto b { color: var(--text); }
-    .status { font-size: 13px; color: var(--muted); min-height: 1.2em; margin-top: 8px; }
-    .overlay {
-      position: fixed; inset: 0; background: rgba(8, 9, 12, 0.72);
-      display: none; place-items: center; z-index: 20;
+    .drop-locked {
+      opacity: 0.5;
+      cursor: not-allowed !important;
     }
-    .overlay.show { display: grid; }
-    .spinner {
-      width: 36px; height: 36px; border: 3px solid #3a4154; border-top-color: var(--orange);
-      border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+    .folder-glow {
+      border-color: #e00000 !important;
+      box-shadow: 0 0 0 0.25rem rgba(224, 0, 0, 0.35);
+      animation: folderPulse 1.5s ease-in-out 2;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .hidden { display: none !important; }
-    footer { color: var(--muted); font-size: 12px; margin-top: 18px; }
+    @keyframes folderPulse {
+      0%, 100% { box-shadow: 0 0 0 0.15rem rgba(224, 0, 0, 0.25); }
+      50% { box-shadow: 0 0 0 0.4rem rgba(224, 0, 0, 0.45); }
+    }
+    .status-banner {
+      background: #e00000;
+      color: #fff;
+      padding: 1.35rem 1.5rem;
+      border-radius: 10px;
+    }
+    .status-banner.is-error {
+      background: #1a1a1a;
+      border: 2px solid #e00000;
+    }
+    .status-banner .status-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .status-banner .status-path {
+      font-family: ui-monospace, "Cascadia Code", Consolas, "SF Mono", monospace;
+      font-size: 13px;
+      background: rgba(0, 0, 0, 0.28);
+      padding: 0.55rem 0.8rem;
+      border-radius: 6px;
+      word-break: break-all;
+      margin-top: 0.75rem;
+    }
+    .cmd {
+      font-family: ui-monospace, "Cascadia Code", Consolas, "SF Mono", monospace;
+      font-size: 13.5px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: normal;
+      color: #ececec;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a !important;
+      border-left: 3px solid #e00000 !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .accordion-button:not(.collapsed) {
+      color: #111;
+      background-color: #fff;
+      box-shadow: none;
+    }
+    .key-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px 8px 8px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      background: #f8f9fa;
+      color: #212529;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .key-chip kbd {
+      font-size: 15px;
+      font-weight: 700;
+      padding: 5px 8px;
+      background: #343a40;
+      color: #fff;
+      border-radius: 6px;
+    }
+    .accordion-button:focus,
+    .accordion-button:focus-visible {
+      box-shadow: none;
+      outline: none;
+      border-color: var(--bs-accordion-border-color, #dee2e6);
+    }
+    .game-card {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding: 1rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    .game-card .flex-grow-1 { min-width: 0; }
+    .game-map-icon {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    .game-map-fallback {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      background: #1a1a1a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .game-score-spoiler summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: #e00000;
+      user-select: none;
+      list-style: none;
+    }
+    .game-score-spoiler summary::-webkit-details-marker { display: none; }
+    .game-score-spoiler summary::before { content: "▸ "; }
+    .game-score-spoiler[open] summary::before { content: "▾ "; }
+    .game-score-spoiler summary:hover { color: #b80000; }
+    .game-score {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      margin-top: 0.4rem;
+    }
+    .game-score span {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #888;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="mark">VC</div>
-        <div>
-          <h1>faceit-voicechat</h1>
-          <div class="sub" id="subtitle"></div>
+  <div class="container-fluid page-wrap py-4 px-4 px-xl-5">
+    <header class="site-header mb-4">
+      <div class="site-nav">
+        <h1 class="h3 mb-0 fw-bold" id="appTitle"></h1>
+        <div class="btn-group" role="group" aria-label="Language">
+          <button class="btn btn-outline-dark lang-flag" id="langRu" type="button" title="Русский">🇷🇺</button>
+          <button class="btn btn-outline-dark lang-flag" id="langEn" type="button" title="English">🇬🇧</button>
         </div>
+        <button class="btn btn-dark" id="quitBtn" type="button">
+          <i class="bi bi-x-lg me-1"></i><span id="quitLabel"></span>
+        </button>
       </div>
-      <div class="tools">
-        <button class="ghost" id="langBtn" type="button">EN</button>
-        <button class="ghost" id="quitBtn" type="button"></button>
-      </div>
+      <img class="brand-hero" src="/vendor/logo.png" alt="" />
     </header>
 
     <div id="banners"></div>
 
-    <section class="card">
-      <h2 id="tDemo"></h2>
-      <div class="drop" id="drop">
-        <div><strong id="dropTitle"></strong></div>
-        <div class="hint" id="dropHint"></div>
-        <div class="file-pill hidden" id="filePill"></div>
+    <div class="mb-4" id="dropCard">
+      <h2 class="h6 text-secondary" id="tDemo"></h2>
+      <div class="drop-zone border border-2 border-dashed rounded-3 text-center" id="drop">
+        <div class="fs-1 text-danger mb-2" id="dropIcon"><i class="bi bi-upload"></i></div>
+        <div class="fs-5 fw-semibold" id="dropTitle"></div>
+        <div class="drop-file d-none" id="filePill"></div>
+        <div class="text-secondary mt-2" id="dropHint"></div>
       </div>
       <input id="file" type="file" accept=".dem,.zst" hidden />
-    </section>
+    </div>
 
-    <section class="card hidden" id="result">
-      <h2 id="tBind"></h2>
-      <div class="row">
-        <div class="cmd" id="bindCmd"></div>
-        <button class="primary" id="copyBind" type="button"></button>
+    <div class="card shadow-sm mb-4 d-none" id="result">
+      <div class="card-body p-4">
+        <div class="status-banner mb-4" id="copyBanner">
+          <div class="status-title" id="copyBannerTitle"></div>
+          <div class="mt-2 fs-5 d-none" id="copyBannerText"></div>
+          <div class="status-path d-none" id="copyBannerPath"></div>
+          <div class="mt-3 fw-bold" id="copyBannerNext"></div>
+          <button class="btn btn-light mt-3 d-none" id="copyDemoBtn" type="button"></button>
+        </div>
+        <h2 class="h6 text-uppercase text-secondary" id="tBind"></h2>
+        <div class="row g-3 align-items-stretch mb-3">
+          <div class="col-12 col-lg">
+            <div class="cmd rounded p-3 h-100" id="bindCmd"></div>
+          </div>
+          <div class="col-12 col-lg-auto d-grid">
+            <button class="btn btn-primary btn-lg" id="copyBind" type="button">
+              <i class="bi bi-clipboard me-1"></i><span id="copyBindLabel"></span>
+            </button>
+          </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2 mb-2">
+          <div class="key-chip">
+            <kbd id="k0">F5</kbd>
+            <span id="k0h"></span>
+          </div>
+          <div class="key-chip">
+            <kbd id="k1">F6</kbd>
+            <span id="k1h"></span>
+          </div>
+          <div class="key-chip">
+            <kbd id="k2">F7</kbd>
+            <span id="k2h"></span>
+          </div>
+        </div>
+        <p class="text-secondary" id="bindHint"></p>
+        <h2 class="h6 text-uppercase text-secondary mt-4" id="tPlay"></h2>
+        <div class="row g-3 align-items-stretch mb-2">
+          <div class="col-12 col-lg">
+            <div class="cmd rounded p-3 h-100" id="playCmd"></div>
+          </div>
+          <div class="col-12 col-lg-auto d-grid">
+            <button class="btn btn-primary btn-lg" id="copyPlay" type="button">
+              <i class="bi bi-clipboard me-1"></i><span id="copyPlayLabel"></span>
+            </button>
+          </div>
+        </div>
+        <p class="text-secondary" id="playHint"></p>
       </div>
-      <div class="keys">
-        <div class="keycap"><kbd id="k0">F5</kbd><span id="k0h"></span></div>
-        <div class="keycap"><kbd id="k1">F6</kbd><span id="k1h"></span></div>
-        <div class="keycap"><kbd id="k2">F7</kbd><span id="k2h"></span></div>
-      </div>
-      <p class="hint" id="bindHint"></p>
-      <h2 id="tPlay" style="margin-top:18px"></h2>
-      <div class="row">
-        <div class="cmd" id="playCmd"></div>
-        <button id="copyPlay" type="button"></button>
-      </div>
-      <p class="status" id="copyStatus"></p>
-      <button id="copyDemoBtn" type="button" class="hidden"></button>
-    </section>
+    </div>
 
-    <section class="card">
-      <h2 id="tSettings"></h2>
-      <label for="folder" id="folderLabel"></label>
-      <div class="row">
-        <input id="folder" type="text" spellcheck="false" />
-        <button id="findBtn" type="button"></button>
-        <button class="primary" id="saveFolder" type="button"></button>
+    <div class="accordion mb-3" id="mainAccordion">
+      <div class="accordion-item" id="gamesItem">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gamesCollapse">
+            <i class="bi bi-clock-history me-2"></i>
+            <span id="tGames"></span>
+            <span class="text-secondary small ms-2 fw-normal" id="gamesSummary"></span>
+          </button>
+        </h2>
+        <div id="gamesCollapse" class="accordion-collapse collapse" data-bs-parent="#mainAccordion">
+          <div class="accordion-body">
+            <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+              <p class="text-secondary mb-0" id="gamesHint"></p>
+              <button class="btn btn-dark btn-sm" id="gamesRefresh" type="button">
+                <i class="bi bi-arrow-clockwise me-1"></i><span id="gamesRefreshLabel"></span>
+              </button>
+            </div>
+            <div id="gamesList"></div>
+          </div>
+        </div>
       </div>
-      <p class="hint" id="folderHint"></p>
-      <p class="hint hidden" id="folderWarn"></p>
-      <div class="found" id="found"></div>
-      <div style="height:14px"></div>
-      <label id="keysLabel"></label>
-      <div class="key-inputs">
-        <input id="key0" type="text" maxlength="16" />
-        <input id="key1" type="text" maxlength="16" />
-        <input id="key2" type="text" maxlength="16" />
+      <div class="accordion-item" id="settingsItem">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#settingsCollapse">
+            <i class="bi bi-gear me-2"></i>
+            <span id="tSettings"></span>
+            <span class="text-secondary small ms-2 fw-normal" id="settingsSummary"></span>
+          </button>
+        </h2>
+        <div id="settingsCollapse" class="accordion-collapse collapse" data-bs-parent="#mainAccordion">
+          <div class="accordion-body">
+            <label class="form-label" for="folderSettings" id="folderLabelSettings"></label>
+            <div class="row g-2">
+              <div class="col-12 col-lg">
+                <input class="form-control form-control-lg" id="folderSettings" type="text" spellcheck="false" />
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-primary btn-lg" id="findBtnSettings" type="button">
+                  <i class="bi bi-search me-1"></i><span id="findLabelSettings"></span>
+                </button>
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-dark btn-lg" id="browseBtnSettings" type="button">
+                  <i class="bi bi-folder2-open me-1"></i><span id="browseLabelSettings"></span>
+                </button>
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-primary btn-lg" id="saveFolderSettings" type="button"></button>
+              </div>
+            </div>
+            <p class="form-text" id="folderHintSettings"></p>
+            <p class="form-text text-danger d-none" id="folderWarn"></p>
+            <div class="list-group mb-4" id="foundSettings"></div>
+            <label class="form-label" id="keysLabel"></label>
+            <div class="row g-2">
+              <div class="col-md-4"><input class="form-control form-control-lg" id="key0" type="text" maxlength="16" /></div>
+              <div class="col-md-4"><input class="form-control form-control-lg" id="key1" type="text" maxlength="16" /></div>
+              <div class="col-md-4"><input class="form-control form-control-lg" id="key2" type="text" maxlength="16" /></div>
+            </div>
+            <button class="btn btn-primary mt-3" id="saveKeys" type="button"></button>
+            <p class="text-secondary small mt-2 mb-0" id="settingsStatus"></p>
+          </div>
+        </div>
       </div>
-      <div style="margin-top:10px">
-        <button class="primary" id="saveKeys" type="button"></button>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#howCollapse">
+            <i class="bi bi-info-circle me-2"></i>
+            <span id="tHow"></span>
+          </button>
+        </h2>
+        <div id="howCollapse" class="accordion-collapse collapse" data-bs-parent="#mainAccordion">
+          <div class="accordion-body">
+            <ol class="mb-0" id="howto"></ol>
+          </div>
+        </div>
       </div>
-      <p class="status" id="settingsStatus"></p>
-    </section>
+    </div>
 
-    <section class="card">
-      <h2 id="tHow"></h2>
-      <ol class="howto" id="howto"></ol>
-    </section>
-    <footer id="foot"></footer>
+    <footer class="text-secondary small" id="foot"></footer>
   </div>
 
-  <div class="overlay" id="overlay">
-    <div style="text-align:center">
-      <div class="spinner"></div>
-      <div id="overlayText"></div>
+  <div class="modal fade" id="folderModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tGate"></h5>
+        </div>
+        <div class="modal-body">
+          <p class="text-secondary" id="folderHint"></p>
+          <div class="d-grid gap-2 d-md-flex mb-3">
+            <button class="btn btn-primary btn-lg" id="findBtn" type="button">
+              <i class="bi bi-search me-1"></i><span id="findLabel"></span>
+            </button>
+            <button class="btn btn-dark btn-lg" id="browseBtn" type="button">
+              <i class="bi bi-folder2-open me-1"></i><span id="browseLabel"></span>
+            </button>
+          </div>
+          <label class="form-label" for="folder" id="folderLabel"></label>
+          <input class="form-control form-control-lg folder-glow" id="folder" type="text" spellcheck="false" />
+          <button class="btn btn-primary mt-3" id="saveFolder" type="button"></button>
+          <p class="text-secondary small mt-3 mb-0" id="folderStatus"></p>
+        </div>
+      </div>
     </div>
   </div>
 
+  <div class="modal fade" id="overlay" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body text-center py-4">
+          <div class="spinner-border text-danger" role="status"></div>
+          <div class="mt-3" id="overlayText"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/vendor/bootstrap.bundle.min.js"></script>
   <script>
     const i18n = {
       ru: {
-        subtitle: "Локальная страница: бинды голосового чата для демки CS2",
+        title: "LET'S START",
         quit: "Выйти",
-        demo: "Демка",
+        gate: "Укажи папку CS2",
+        demo: "Быстрая подгрузка",
         dropTitle: "Перетащи .dem сюда или нажми, чтобы выбрать файл",
-        dropHint: "Подойдёт обычная демка или сжатая .dem.zst. Если открыл файл через «Open with», он уже должен быть здесь.",
+        dropHint: "Подойдёт обычная демка или сжатая .dem.zst.",
+        dropLoaded: "Демка загружена",
+        dropReplace: "Нажми или перетащи другую — заменит текущую.",
+        dropLocked: "Сначала укажи папку CS2 — без неё загрузка закрыта.",
         bind: "Бинд в консоль CS2",
         copy: "Копировать",
         copied: "Скопировано",
-        k0: "голоса CT",
-        k1: "голоса T",
-        k2: "все голоса",
+        k0: "слушать CT",
+        k1: "слушать T",
+        k2: "слушать обе",
         bindHint: "Открой консоль в CS2 клавишей ~ и вставь одну строку. После этого клавиши переключают, чьи голоса слышно на записи.",
         play: "Команда playdemo",
+        playHint: "Вставь эту строку в консоль после бинда.",
         copyDemo: "Скопировать демку в папку CS2",
+        copiedTitle: "Демонстрация уже в папке с игрой!",
         copiedDemo: "Демка скопирована в папку игры — playdemo найдёт файл.",
-        notCopied: "Папка CS2 не задана, поэтому демка не скопирована. Ниже можно найти стандартный путь.",
+        copiedNext: "Запускай CS2 и вводи команды в консоль!",
+        notCopied: "Папка CS2 не задана, поэтому демка не скопирована.",
         copyFail: "Не удалось скопировать демку",
+        games: "Прошлые игры",
+        gamesHint: "Демки из выбранной папки CS2. Счёт спрятан под спойлер.",
+        gamesEmpty: "В папке пока нет .dem файлов.",
+        gamesNeedFolder: "Сначала укажи папку CS2 в Настройках.",
+        gamesShowScore: "Показать счёт",
+        gamesLaunch: "Запустить",
+        gamesScoreLoading: "Читаем счёт…",
+        gamesNoScore: "Счёт не удалось прочитать",
+        gamesLoading: "Ищем демки…",
+        gamesRefresh: "Обновить",
+        gamesTruncated: "Показаны последние 40 демок.",
+        gamesDateUnknown: "Дата неизвестна",
         settings: "Настройки",
         folderLabel: "Папка игры (…\\Counter-Strike Global Offensive\\game\\csgo)",
-        folderHint: "Именно game\\csgo — туда CS2 кладёт демки для playdemo. Нажми «Найти CS2»: проверим Steam и стандартные диски.",
+        folderHint: "Нужна папка game\\csgo — туда копируется демка. «Найти CS2» ищет Steam сам и сразу сохраняет. «Проводник» открывает выбор папки.",
+        folderPlaceholder: "…\\Counter-Strike Global Offensive\\game\\csgo",
         folderWarn: "Путь сохранён, но не похож на game\\csgo. Если playdemo не находит файл — выбери папку csgo внутри game.",
+        folderNudge: "Сначала укажи папку CS2 (game\\csgo).",
+        waitingFolder: "Демка уже открыта, но ждёт папку игры.",
         find: "Найти CS2",
+        browse: "Проводник",
         save: "Сохранить",
-        foundNone: "CS2 автоматически не нашёлся. Поставь Steam-путь вручную: Steam\\steamapps\\common\\Counter-Strike Global Offensive\\game\\csgo",
-        found: "Нашли такие папки — нажми, чтобы подставить:",
-        useThis: "Использовать этот путь",
-        keysLabel: "Клавиши: CT / T / все",
+        searching: "Ищем CS2 в Steam…",
+        foundNone: "Автоматически не нашлось. Открой проводник или вставь путь вручную.",
+        found: "Другие найденные папки — нажми, чтобы сохранить:",
+        keysLabel: "Клавиши: CT / T / обе",
         saveKeys: "Сохранить клавиши",
         saved: "Сохранено",
         how: "Как пользоваться",
         howItems: [
-          "Открой демку на этой странице (или через ПКМ → Open with на .dem).",
-          "Если папка CS2 пустая — нажми «Найти CS2» и сохрани найденный путь. Тогда демка скопируется сама.",
+          "Если папка CS2 ещё не сохранена — на старте откроется окно. Нажми «Найти CS2» или выбери папку в проводнике.",
+          "Потом открой демку на этой странице (или через ПКМ → Open with на .dem).",
           "Скопируй бинд, в игре нажми ~ и вставь в консоль.",
-          "Вставь playdemo … в консоль (или открой демку как обычно). Клавишами слушай CT, T или всех."
+          "Вставь playdemo … в консоль. Клавишами: слушать CT, T или обе. Сменить папку можно в Настройках."
         ],
         overlay: "Читаем демку, это может занять минуту…",
         quitDone: "Сервер остановлен, вкладку можно закрыть.",
@@ -265,41 +540,64 @@
         err: "Ошибка"
       },
       en: {
-        subtitle: "Local page: CS2 demo voice-listen binds",
+        title: "LET'S START",
         quit: "Quit",
-        demo: "Demo",
+        gate: "Set the CS2 folder",
+        demo: "Quick load",
         dropTitle: "Drop a .dem here, or click to choose a file",
-        dropHint: "Plain .dem or compressed .dem.zst. If you used Open with, the file should already be loaded.",
+        dropHint: "Plain .dem or compressed .dem.zst.",
+        dropLoaded: "Demo loaded",
+        dropReplace: "Click or drop another file to replace it.",
+        dropLocked: "Set the CS2 folder first — uploads stay locked until then.",
         bind: "CS2 console bind",
         copy: "Copy",
         copied: "Copied",
-        k0: "CT voices",
-        k1: "T voices",
-        k2: "all voices",
+        k0: "listen CT",
+        k1: "listen T",
+        k2: "listen both",
         bindHint: "Open the CS2 console with ~ and paste this single line. The keys then switch which team you hear in the demo.",
         play: "playdemo command",
+        playHint: "Paste this line into the console after the bind.",
         copyDemo: "Copy demo into the CS2 folder",
-        copiedDemo: "Demo copied into the game folder, so playdemo can find it.",
-        notCopied: "Game folder is not set, so the demo was not copied. Try Find CS2 below.",
+        copiedTitle: "The demo is already in the game folder!",
+        copiedDemo: "Demo copied into the game folder — playdemo will find the file.",
+        copiedNext: "Launch CS2 and paste the commands in the console!",
+        notCopied: "Game folder is not set, so the demo was not copied.",
         copyFail: "Could not copy the demo",
+        games: "Past games",
+        gamesHint: "Demos from the selected CS2 folder. The score stays behind a spoiler.",
+        gamesEmpty: "No .dem files in this folder yet.",
+        gamesNeedFolder: "Set the CS2 folder in Settings first.",
+        gamesShowScore: "Show score",
+        gamesLaunch: "Launch",
+        gamesScoreLoading: "Reading score…",
+        gamesNoScore: "Could not read the score",
+        gamesLoading: "Looking for demos…",
+        gamesRefresh: "Refresh",
+        gamesTruncated: "Showing the 40 most recent demos.",
+        gamesDateUnknown: "Date unknown",
         settings: "Settings",
         folderLabel: "Game folder (…\\Counter-Strike Global Offensive\\game\\csgo)",
-        folderHint: "Use the game\\csgo folder — that is where CS2 looks for playdemo files. Click Find CS2 to scan Steam libraries and common drives.",
+        folderHint: "Need the game\\csgo folder — demos are copied there. Find CS2 scans Steam and saves immediately. Browse opens a folder picker.",
+        folderPlaceholder: "…\\Counter-Strike Global Offensive\\game\\csgo",
         folderWarn: "Saved, but this does not look like game\\csgo. If playdemo cannot find the file, pick the csgo folder inside game.",
+        folderNudge: "Set the CS2 folder (game\\csgo) first.",
+        waitingFolder: "A demo is already open and is waiting for the game folder.",
         find: "Find CS2",
+        browse: "Browse",
         save: "Save",
-        foundNone: "CS2 was not found automatically. Set the Steam path yourself: Steam\\steamapps\\common\\Counter-Strike Global Offensive\\game\\csgo",
-        found: "Found these folders — click one to use it:",
-        useThis: "Use this path",
-        keysLabel: "Keys: CT / T / all",
+        searching: "Searching Steam for CS2…",
+        foundNone: "Nothing found automatically. Use Browse or paste the path.",
+        found: "Other folders found — click one to save it:",
+        keysLabel: "Keys: CT / T / both",
         saveKeys: "Save keys",
         saved: "Saved",
         how: "How to use",
         howItems: [
-          "Open a demo here (or right-click a .dem → Open with this app).",
-          "If the CS2 folder is empty, click Find CS2 and save the path. The demo is then copied automatically.",
+          "If the CS2 folder is not saved yet, a window opens on start. Click Find CS2 or pick a folder.",
+          "Then open a demo here (or right-click a .dem → Open with this app).",
           "Copy the bind, press ~ in-game, and paste it into the console.",
-          "Paste playdemo … in the console (or open the demo as usual). Use the keys to hear CT, T, or everyone."
+          "Paste playdemo … in the console. Change the folder later in Settings."
         ],
         overlay: "Reading the demo, this can take a minute…",
         quitDone: "Server stopped. You can close this tab.",
@@ -310,104 +608,327 @@
 
     let lang = localStorage.getItem("fv-lang") || ((navigator.language || "en").toLowerCase().startsWith("ru") ? "ru" : "en");
     let state = null;
+    let autoFindTried = false;
+    let overlayModal = null;
+    let folderModal = null;
+    let gamesCache = null;
+    let gamesFolder = "";
+    let gamesLoading = false;
+    const gameScores = {};
+    const openScoreIds = new Set();
 
     const $ = (id) => document.getElementById(id);
-
     function t() { return i18n[lang]; }
+    function hasFolder() { return !!(state && state.config && state.config.gameFolder); }
 
     function applyLang() {
       const x = t();
       document.documentElement.lang = lang;
-      $("subtitle").textContent = x.subtitle;
-      $("quitBtn").textContent = x.quit;
+      $("appTitle").textContent = x.title;
+      document.title = x.title;
+      $("quitLabel").textContent = x.quit;
+      $("tGate").textContent = x.gate;
       $("tDemo").textContent = x.demo;
-      $("dropTitle").textContent = x.dropTitle;
-      $("dropHint").textContent = x.dropHint;
       $("tBind").textContent = x.bind;
-      $("copyBind").textContent = x.copy;
+      $("copyBindLabel").textContent = x.copy;
       $("k0h").textContent = x.k0;
       $("k1h").textContent = x.k1;
       $("k2h").textContent = x.k2;
       $("bindHint").textContent = x.bindHint;
       $("tPlay").textContent = x.play;
-      $("copyPlay").textContent = x.copy;
+      $("playHint").textContent = x.playHint;
+      $("copyPlayLabel").textContent = x.copy;
       $("copyDemoBtn").textContent = x.copyDemo;
+      $("tGames").textContent = x.games;
+      $("gamesHint").textContent = x.gamesHint;
+      $("gamesRefreshLabel").textContent = x.gamesRefresh;
       $("tSettings").textContent = x.settings;
       $("folderLabel").textContent = x.folderLabel;
+      $("folderLabelSettings").textContent = x.folderLabel;
       $("folderHint").textContent = x.folderHint;
+      $("folderHintSettings").textContent = x.folderHint;
       $("folderWarn").textContent = x.folderWarn;
-      $("findBtn").textContent = x.find;
+      $("folder").placeholder = x.folderPlaceholder;
+      $("folderSettings").placeholder = x.folderPlaceholder;
+      $("findLabel").textContent = x.find;
+      $("findLabelSettings").textContent = x.find;
+      $("browseLabel").textContent = x.browse;
+      $("browseLabelSettings").textContent = x.browse;
       $("saveFolder").textContent = x.save;
+      $("saveFolderSettings").textContent = x.save;
       $("keysLabel").textContent = x.keysLabel;
       $("saveKeys").textContent = x.saveKeys;
       $("tHow").textContent = x.how;
       $("howto").innerHTML = x.howItems.map((s) => `<li>${s}</li>`).join("");
       $("overlayText").textContent = x.overlay;
       $("foot").textContent = x.foot;
-      $("langBtn").textContent = lang === "ru" ? "EN" : "RU";
+      $("langRu").classList.toggle("btn-dark", lang === "ru");
+      $("langRu").classList.toggle("btn-outline-dark", lang !== "ru");
+      $("langEn").classList.toggle("btn-dark", lang === "en");
+      $("langEn").classList.toggle("btn-outline-dark", lang !== "en");
+      $("dropTitle").textContent = x.dropTitle;
+      $("dropHint").textContent = hasFolder() ? x.dropHint : x.dropLocked;
       if (state) render(state);
     }
 
     function banner(kind, html) {
-      return `<div class="banner ${kind}">${html}</div>`;
+      const cls = kind === "err" ? "alert-danger" : kind === "ok" ? "alert-success" : "alert-warning";
+      return `<div class="alert ${cls}">${html}</div>`;
+    }
+
+    function shortPath(p) {
+      const norm = String(p).replace(/\\/g, "/");
+      const parts = norm.split("/").filter(Boolean);
+      if (parts.length <= 3) return p;
+      return "…/" + parts.slice(-3).join("/");
+    }
+
+    function syncFolderModal() {
+      if (hasFolder()) folderModal.hide();
+      else folderModal.show();
+    }
+
+    function nudgeFolder() {
+      folderModal.show();
+      $("folder").classList.add("folder-glow");
+      $("folder").focus();
+    }
+
+    function renderFound(box, folders, current) {
+      const x = t();
+      const extras = folders.filter((p) => p !== current);
+      if (!extras.length) {
+        box.innerHTML = "";
+        return;
+      }
+      box.innerHTML = `<div class="list-group-item text-secondary small">${x.found}</div>` + extras.map((p) => {
+        return `<button type="button" class="list-group-item list-group-item-action" data-path="${escapeAttr(p)}">${escapeHtml(p)}</button>`;
+      }).join("");
+      box.querySelectorAll("button[data-path]").forEach((btn) => {
+        btn.addEventListener("click", () => saveConfig({ gameFolder: btn.dataset.path }));
+      });
     }
 
     function render(s) {
       state = s;
       const x = t();
-      $("folder").value = s.config.gameFolder || "";
+      const folder = s.config.gameFolder || "";
+      $("folder").value = folder;
+      $("folderSettings").value = folder;
       (s.config.keys || ["F5", "F6", "F7"]).forEach((k, i) => {
         $("key" + i).value = k;
         $("k" + i).textContent = k;
       });
 
-      const banners = [];
-      if (s.demo.error) banners.push(banner("err", x.err + ": " + escapeHtml(s.demo.error)));
-      if (!s.config.gameFolder && (s.detectedFolders || []).length) {
-        banners.push(banner("warn", x.found + " <b>" + escapeHtml(s.detectedFolders[0]) + "</b>"));
-      }
-      $("banners").innerHTML = banners.join("");
+      const gated = !folder;
+      $("folder").classList.toggle("folder-glow", gated);
+      $("drop").classList.toggle("drop-locked", gated);
+      $("drop").classList.toggle("drop-loaded", !!s.demo.loaded);
+      $("drop").setAttribute("aria-disabled", gated ? "true" : "false");
+      $("settingsSummary").textContent = folder ? shortPath(folder) : "";
 
       if (s.demo.loaded) {
-        $("result").classList.remove("hidden");
-        $("bindCmd").textContent = s.demo.bind;
-        $("playCmd").textContent = s.demo.playdemo;
-        $("filePill").classList.remove("hidden");
+        $("dropIcon").innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+        $("dropIcon").classList.remove("text-danger");
+        $("dropTitle").textContent = x.dropLoaded;
+        $("filePill").classList.remove("d-none");
         $("filePill").textContent = s.demo.name;
+        $("dropHint").textContent = gated ? x.dropLocked : x.dropReplace;
+      } else {
+        $("dropIcon").innerHTML = '<i class="bi bi-upload"></i>';
+        $("dropIcon").classList.add("text-danger");
+        $("dropTitle").textContent = x.dropTitle;
+        $("filePill").classList.add("d-none");
+        $("filePill").textContent = "";
+        $("dropHint").textContent = gated ? x.dropLocked : x.dropHint;
+      }
+
+      const banners = [];
+      if (s.demo.error) banners.push(banner("err", x.err + ": " + escapeHtml(s.demo.error)));
+      if (gated && s.demo.loaded) banners.push(banner("warn", x.waitingFolder + " <b>" + escapeHtml(s.demo.name) + "</b>"));
+      $("banners").innerHTML = banners.join("");
+
+      const showResult = s.demo.loaded && !gated;
+      $("result").classList.toggle("d-none", !showResult);
+      if (s.demo.loaded) {
+        $("bindCmd").textContent = s.demo.bind.replace(/; bind /g, ";\nbind ");
+        $("bindCmd").dataset.raw = s.demo.bind;
+        $("playCmd").textContent = s.demo.playdemo;
         if (s.demo.copied) {
-          $("copyStatus").textContent = x.copiedDemo + " " + s.demo.copiedTo;
-          $("copyDemoBtn").classList.add("hidden");
-        } else if (!s.config.gameFolder) {
-          $("copyStatus").textContent = x.notCopied;
-          $("copyDemoBtn").classList.add("hidden");
+          $("copyBanner").classList.remove("is-error");
+          $("copyBannerTitle").textContent = x.copiedTitle;
+          $("copyBannerText").textContent = "";
+          $("copyBannerText").classList.add("d-none");
+          $("copyBannerPath").classList.remove("d-none");
+          $("copyBannerPath").textContent = s.demo.copiedTo;
+          $("copyBannerNext").textContent = x.copiedNext;
+          $("copyDemoBtn").classList.add("d-none");
+        } else if (!folder) {
+          $("copyBanner").classList.add("is-error");
+          $("copyBannerTitle").textContent = x.notCopied;
+          $("copyBannerText").textContent = "";
+          $("copyBannerText").classList.add("d-none");
+          $("copyBannerPath").classList.add("d-none");
+          $("copyBannerPath").textContent = "";
+          $("copyBannerNext").textContent = "";
+          $("copyDemoBtn").classList.add("d-none");
         } else {
-          $("copyStatus").textContent = s.demo.copyError ? (x.copyFail + ": " + s.demo.copyError) : "";
-          $("copyDemoBtn").classList.remove("hidden");
+          $("copyBanner").classList.add("is-error");
+          $("copyBannerTitle").textContent = s.demo.copyError ? x.copyFail : x.notCopied;
+          $("copyBannerText").textContent = s.demo.copyError || "";
+          $("copyBannerText").classList.toggle("d-none", !s.demo.copyError);
+          $("copyBannerPath").classList.add("d-none");
+          $("copyBannerPath").textContent = "";
+          $("copyBannerNext").textContent = "";
+          $("copyDemoBtn").classList.toggle("d-none", !s.demo.copyError);
         }
       }
 
-      const folders = s.detectedFolders || [];
-      $("folderWarn").classList.toggle("hidden", !s.config.gameFolder || s.looksLikeGameFolder);
-      renderFound(folders, s.config.gameFolder);
+      $("folderWarn").classList.toggle("d-none", !folder || s.looksLikeGameFolder);
+      renderFound($("foundSettings"), s.detectedFolders || [], folder);
+      if (folder !== gamesFolder) {
+        gamesFolder = folder;
+        gamesCache = null;
+        Object.keys(gameScores).forEach((k) => { delete gameScores[k]; });
+        openScoreIds.clear();
+        if ($("gamesCollapse").classList.contains("show")) loadGames(true);
+      }
+      syncFolderModal();
+      renderGames();
     }
 
-    function renderFound(folders, current) {
-      const box = $("found");
+    function formatGameDate(unix) {
+      if (!unix) return t().gamesDateUnknown;
+      const d = new Date(unix * 1000);
+      if (Number.isNaN(d.getTime())) return t().gamesDateUnknown;
+      return d.toLocaleString(lang === "ru" ? "ru-RU" : "en-GB", {
+        day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
+      });
+    }
+
+    function renderGames() {
       const x = t();
-      if (!folders.length) {
-        box.innerHTML = `<p class="hint">${x.foundNone}</p>`;
+      const box = $("gamesList");
+      if (!hasFolder()) {
+        $("gamesSummary").textContent = "";
+        box.innerHTML = `<p class="text-secondary mb-0">${escapeHtml(x.gamesNeedFolder)}</p>`;
         return;
       }
-      box.innerHTML = `<p class="hint">${x.found}</p>` + folders.map((p) => {
-        const active = p === current ? " active" : "";
-        return `<button type="button" class="${active}" data-path="${escapeAttr(p)}">${escapeHtml(p)}</button>`;
+      if (gamesLoading) {
+        box.innerHTML = `<div class="text-secondary"><span class="spinner-border spinner-border-sm text-danger me-2"></span>${escapeHtml(x.gamesLoading)}</div>`;
+        return;
+      }
+      if (!gamesCache) {
+        box.innerHTML = "";
+        return;
+      }
+      const games = gamesCache.games || [];
+      $("gamesSummary").textContent = games.length ? String(games.length) : "";
+      if (!games.length) {
+        box.innerHTML = `<p class="text-secondary mb-0">${escapeHtml(x.gamesEmpty)}</p>`;
+        return;
+      }
+      const truncated = gamesCache.truncated ? `<p class="text-secondary small">${escapeHtml(x.gamesTruncated)}</p>` : "";
+      box.innerHTML = truncated + games.map((g) => {
+        const title = g.mapTitle || g.map || g.name;
+        const icon = g.iconUrl
+          ? `<img class="game-map-icon" src="${escapeAttr(g.iconUrl)}" alt="${escapeAttr(title)}" onerror="this.classList.add('d-none'); this.nextElementSibling.classList.remove('d-none');"><div class="game-map-fallback d-none"><i class="bi bi-map"></i></div>`
+          : `<div class="game-map-fallback"><i class="bi bi-map"></i></div>`;
+        const score = renderGameScore(g.id);
+        const openAttr = openScoreIds.has(g.id) ? " open" : "";
+        return `<div class="game-card">
+          ${icon}
+          <div class="flex-grow-1">
+            <div class="fw-bold">${escapeHtml(title)}</div>
+            <div class="text-secondary small">${escapeHtml(formatGameDate(g.dateUnix))}</div>
+            <div class="text-secondary small text-truncate">${escapeHtml(g.name)}</div>
+            <button type="button" class="btn btn-primary btn-sm mt-2 game-open" data-id="${escapeAttr(g.id)}">
+              <i class="bi bi-play-fill me-1"></i>${escapeHtml(x.gamesLaunch)}
+            </button>
+            <details class="game-score-spoiler mt-2" data-id="${escapeAttr(g.id)}"${openAttr}>
+              <summary>${escapeHtml(x.gamesShowScore)}</summary>
+              ${score}
+            </details>
+          </div>
+        </div>`;
       }).join("");
-      box.querySelectorAll("button[data-path]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          $("folder").value = btn.dataset.path;
-          saveConfig({ gameFolder: btn.dataset.path });
+      box.querySelectorAll("button.game-open").forEach((btn) => {
+        btn.addEventListener("click", () => openPastGame(btn.dataset.id));
+      });
+      box.querySelectorAll("details.game-score-spoiler").forEach((el) => {
+        el.addEventListener("toggle", () => {
+          const id = el.dataset.id;
+          if (el.open) {
+            openScoreIds.add(id);
+            loadGameScore(id);
+          } else {
+            openScoreIds.delete(id);
+          }
         });
       });
+    }
+
+    function renderGameScore(id) {
+      const x = t();
+      const got = gameScores[id];
+      if (got && got.loading) return `<div class="text-secondary small mt-2">${escapeHtml(x.gamesScoreLoading)}</div>`;
+      if (got && got.error) return `<div class="text-secondary small mt-2">${escapeHtml(x.gamesNoScore)}</div>`;
+      if (got) return `<div class="game-score"><span>CT</span> ${got.ct} : ${got.t} <span>T</span></div>`;
+      return "";
+    }
+
+    async function loadGames(force) {
+      if (!hasFolder()) {
+        gamesCache = null;
+        renderGames();
+        return;
+      }
+      if (gamesLoading) return;
+      if (gamesCache && !force) {
+        renderGames();
+        return;
+      }
+      gamesLoading = true;
+      renderGames();
+      try {
+        gamesCache = await api("/api/games");
+      } catch (e) {
+        gamesCache = { games: [] };
+        $("gamesList").innerHTML = banner("err", t().err + ": " + escapeHtml(e.message));
+        gamesLoading = false;
+        return;
+      }
+      gamesLoading = false;
+      renderGames();
+    }
+
+    async function openPastGame(id) {
+      if (!id) return;
+      overlayModal.show();
+      try {
+        render(await api("/api/games/open?id=" + encodeURIComponent(id), { method: "POST" }));
+        bootstrap.Collapse.getOrCreateInstance($("gamesCollapse")).hide();
+        $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (e) {
+        $("banners").innerHTML = banner("err", t().err + ": " + escapeHtml(e.message));
+      } finally {
+        overlayModal.hide();
+      }
+    }
+
+    async function loadGameScore(id) {
+      if (!id) return;
+      const prev = gameScores[id];
+      if (prev && (prev.loading || !prev.error)) return;
+      gameScores[id] = { loading: true };
+      renderGames();
+      try {
+        const got = await api("/api/games/score?id=" + encodeURIComponent(id));
+        gameScores[id] = { ct: got.ct, t: got.t };
+      } catch (_) {
+        gameScores[id] = { error: true };
+      }
+      renderGames();
     }
 
     function escapeHtml(s) {
@@ -428,6 +949,10 @@
 
     async function refresh() {
       render(await api("/api/state"));
+      if (!hasFolder() && !autoFindTried) {
+        autoFindTried = true;
+        await findAndSave();
+      }
     }
 
     async function saveConfig(body) {
@@ -438,65 +963,122 @@
           body: JSON.stringify(body)
         }));
         $("settingsStatus").textContent = t().saved;
+        $("folderStatus").textContent = t().saved;
       } catch (e) {
+        $("settingsStatus").textContent = t().err + ": " + e.message;
+        $("folderStatus").textContent = t().err + ": " + e.message;
+      }
+    }
+
+    async function findAndSave() {
+      $("folderStatus").textContent = t().searching;
+      $("settingsStatus").textContent = t().searching;
+      try {
+        render(await api("/api/find", { method: "POST" }));
+        if (hasFolder()) {
+          $("folderStatus").textContent = t().saved;
+          $("settingsStatus").textContent = t().saved;
+        } else {
+          $("folderStatus").textContent = t().foundNone;
+          $("settingsStatus").textContent = t().foundNone;
+        }
+      } catch (e) {
+        $("folderStatus").textContent = t().err + ": " + e.message;
+        $("settingsStatus").textContent = t().err + ": " + e.message;
+      }
+    }
+
+    async function browseFolder() {
+      $("folderStatus").textContent = "…";
+      try {
+        render(await api("/api/browse", { method: "POST" }));
+        $("folderStatus").textContent = hasFolder() ? t().saved : "";
+        $("settingsStatus").textContent = hasFolder() ? t().saved : "";
+      } catch (e) {
+        $("folderStatus").textContent = t().err + ": " + e.message;
         $("settingsStatus").textContent = t().err + ": " + e.message;
       }
     }
 
     async function uploadFile(file) {
+      if (!hasFolder()) {
+        nudgeFolder();
+        return;
+      }
       const fd = new FormData();
       fd.append("demo", file, file.name);
-      $("overlay").classList.add("show");
+      overlayModal.show();
       try {
         render(await api("/api/demo", { method: "POST", body: fd }));
       } catch (e) {
         $("banners").innerHTML = banner("err", t().err + ": " + escapeHtml(e.message));
+        if (!hasFolder()) nudgeFolder();
       } finally {
-        $("overlay").classList.remove("show");
+        overlayModal.hide();
       }
     }
 
-    async function copyText(text, btn) {
+    async function copyText(text, labelId) {
       await navigator.clipboard.writeText(text);
-      const old = btn.textContent;
-      btn.textContent = t().copied;
-      setTimeout(() => { btn.textContent = old; }, 1200);
+      const el = $(labelId);
+      const old = el.textContent;
+      el.textContent = t().copied;
+      setTimeout(() => { el.textContent = old; }, 1200);
     }
 
-    $("langBtn").addEventListener("click", () => {
-      lang = lang === "ru" ? "en" : "ru";
+    function setLang(next) {
+      lang = next;
       localStorage.setItem("fv-lang", lang);
       applyLang();
-    });
+    }
+    $("langRu").addEventListener("click", () => setLang("ru"));
+    $("langEn").addEventListener("click", () => setLang("en"));
     $("quitBtn").addEventListener("click", async () => {
       try { await api("/api/quit", { method: "POST" }); } catch (_) {}
       $("banners").innerHTML = banner("ok", t().quitDone);
     });
-    $("drop").addEventListener("click", () => $("file").click());
-    $("drop").addEventListener("dragover", (e) => { e.preventDefault(); $("drop").classList.add("over"); });
+    $("drop").addEventListener("click", () => {
+      if (!hasFolder()) {
+        nudgeFolder();
+        return;
+      }
+      $("file").click();
+    });
+    $("drop").addEventListener("dragover", (e) => {
+      e.preventDefault();
+      if (hasFolder()) $("drop").classList.add("over");
+    });
     $("drop").addEventListener("dragleave", () => $("drop").classList.remove("over"));
     $("drop").addEventListener("drop", (e) => {
       e.preventDefault();
       $("drop").classList.remove("over");
+      if (!hasFolder()) {
+        nudgeFolder();
+        return;
+      }
       if (e.dataTransfer.files[0]) uploadFile(e.dataTransfer.files[0]);
     });
     $("file").addEventListener("change", () => {
       if ($("file").files[0]) uploadFile($("file").files[0]);
     });
-    $("copyBind").addEventListener("click", () => copyText($("bindCmd").textContent, $("copyBind")));
-    $("copyPlay").addEventListener("click", () => copyText($("playCmd").textContent, $("copyPlay")));
+    $("copyBind").addEventListener("click", () => copyText($("bindCmd").dataset.raw || $("bindCmd").textContent, "copyBindLabel"));
+    $("copyPlay").addEventListener("click", () => copyText($("playCmd").textContent, "copyPlayLabel"));
     $("copyDemoBtn").addEventListener("click", async () => {
       try { render(await api("/api/copy", { method: "POST" })); }
-      catch (e) { $("copyStatus").textContent = t().err + ": " + e.message; }
+      catch (e) { $("copyBannerText").textContent = t().err + ": " + e.message; }
     });
-    $("findBtn").addEventListener("click", async () => {
-      $("settingsStatus").textContent = "…";
-      try { render(await api("/api/detect")); $("settingsStatus").textContent = ""; }
-      catch (e) { $("settingsStatus").textContent = t().err + ": " + e.message; }
-    });
+    $("findBtn").addEventListener("click", findAndSave);
+    $("findBtnSettings").addEventListener("click", findAndSave);
+    $("browseBtn").addEventListener("click", browseFolder);
+    $("browseBtnSettings").addEventListener("click", browseFolder);
     $("saveFolder").addEventListener("click", () => saveConfig({ gameFolder: $("folder").value }));
+    $("saveFolderSettings").addEventListener("click", () => saveConfig({ gameFolder: $("folderSettings").value }));
     $("saveKeys").addEventListener("click", () => saveConfig({ keys: [$("key0").value, $("key1").value, $("key2").value] }));
+    $("gamesRefresh").addEventListener("click", () => loadGames(true));
+    $("gamesCollapse").addEventListener("show.bs.collapse", () => loadGames(false));
 
+    overlayModal = new bootstrap.Modal($("overlay"));
+    folderModal = new bootstrap.Modal($("folderModal"));
     applyLang();
     refresh().catch((e) => {
       $("banners").innerHTML = banner("err", t().err + ": " + escapeHtml(e.message));
