@@ -132,11 +132,36 @@ func copyDemoToGameFolder(cfg config, demoPath string) (string, error) {
 	if cfg.GameFolder == "" {
 		return "", fmt.Errorf("game folder is not set")
 	}
-	dst := filepath.Join(cfg.GameFolder, filepath.Base(demoPath))
-	if err := copyFile(demoPath, dst); err != nil {
+	src, err := filepath.Abs(demoPath)
+	if err != nil {
+		src = demoPath
+	}
+	dst := filepath.Join(cfg.GameFolder, filepath.Base(src))
+	if absDst, err := filepath.Abs(dst); err == nil {
+		dst = absDst
+	}
+	if filepath.Clean(src) == filepath.Clean(dst) {
+		return dst, nil
+	}
+	if demoInsideFolder(cfg.GameFolder, src) {
+		return src, nil
+	}
+	if _, err := os.Stat(dst); err == nil {
+		return dst, nil
+	}
+	if err := copyFile(src, dst); err != nil {
 		return "", err
 	}
 	return dst, nil
+}
+
+func demoInsideFolder(folder, demoPath string) bool {
+	rel, err := filepath.Rel(folder, demoPath)
+	if err != nil {
+		return false
+	}
+	rel = filepath.ToSlash(rel)
+	return rel != "." && !strings.HasPrefix(rel, "../")
 }
 
 func copyFile(src, dst string) error {

@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"os"
+	"path/filepath"
+	"testing"
+)
 
 func TestIdsToBitmask(t *testing.T) {
 	if got := idsToBitmask(nil); got != 0 {
@@ -63,5 +67,71 @@ func TestIsDemoFilename(t *testing.T) {
 	}
 	if isDemoFilename("notes.txt") || isDemoFilename("a.zst") {
 		t.Fatal("expected non-demo filenames to be rejected")
+	}
+}
+
+func TestCopyDemoToGameFolderSkipsWhenAlreadyThere(t *testing.T) {
+	dir := t.TempDir()
+	src := filepath.Join(dir, "match.dem")
+	if err := os.WriteFile(src, []byte("demo"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	cfg := config{GameFolder: dir}
+	got, err := copyDemoToGameFolder(cfg, src)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != src {
+		t.Fatalf("got %q want %q", got, src)
+	}
+}
+
+func TestCopyDemoToGameFolderSkipsExistingDest(t *testing.T) {
+	dir := t.TempDir()
+	dst := filepath.Join(dir, "match.dem")
+	if err := os.WriteFile(dst, []byte("already"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	srcDir := t.TempDir()
+	src := filepath.Join(srcDir, "match.dem")
+	if err := os.WriteFile(src, []byte("new"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	got, err := copyDemoToGameFolder(config{GameFolder: dir}, src)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != dst {
+		t.Fatalf("got %q want %q", got, dst)
+	}
+	data, err := os.ReadFile(dst)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(data) != "already" {
+		t.Fatalf("overwrote dest: %q", data)
+	}
+}
+
+func TestCopyDemoToGameFolderCopiesWhenMissing(t *testing.T) {
+	dir := t.TempDir()
+	src := filepath.Join(t.TempDir(), "match.dem")
+	if err := os.WriteFile(src, []byte("demo"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	got, err := copyDemoToGameFolder(config{GameFolder: dir}, src)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := filepath.Join(dir, "match.dem")
+	if got != want {
+		t.Fatalf("got %q want %q", got, want)
+	}
+	data, err := os.ReadFile(got)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(data) != "demo" {
+		t.Fatalf("got %q", data)
 	}
 }
