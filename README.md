@@ -28,6 +28,7 @@ a real menu, saved settings, and automatic demo handling.
 | Demo file | You move it manually to your game folder | **Auto-copied** to your configured game folder |
 | `playdemo` command | Not provided | **Printed automatically** with the correct filename |
 | Interface | Prints once, then exits | **Interactive menu**: get bind / settings / quit, reusable without relaunching |
+| Updates | None | **Checks GitHub Releases** on startup and notifies if a newer version is out |
 
 ## How to use
 
@@ -42,6 +43,7 @@ Download the latest build: **[Releases → faceit-voicechat.exe](https://github.
 ```
 Press Enter - get bind
 Press S - settings
+Press U - check for updates
 Press Q - quit
 ```
 
@@ -54,8 +56,12 @@ Press Q - quit
 - **S** opens settings:
   1. Set game folder — the folder demos get copied to (e.g. `...\Counter-Strike Global Offensive\game\csgo`)
   2. Change keybinds — replace F5/F6/F7 with any keys you want
-  3. Back
+  3. Auto-check for updates — on by default; checks GitHub Releases on startup and shows a notice if a newer version exists
+  4. Back
+- **U** checks GitHub Releases for a newer version and, if one is found, offers to open the download page.
 - **Q** quits.
+
+On startup (when auto-check is enabled), the program compares its version with the latest GitHub Release and prints a notice if an update is available. This does not interrupt the rest of the workflow if the check fails.
 
 Settings are saved to `%AppData%\faceit-voicechat\config.json` and persist between runs.
 
@@ -67,6 +73,8 @@ Settings are saved to `%AppData%\faceit-voicechat\config.json` and persist betwe
 - Added a settings screen to configure a game folder and custom keybinds (default `F5`, `F6`, `F7`).
 - When a game folder is set, the opened demo is copied there automatically and a matching
   `playdemo <name>` command is printed.
+- Checks GitHub Releases for a newer version on startup (can be turned off in settings)
+  and from the menu (`U`), then notifies if an update is available.
 
 ## License
 
