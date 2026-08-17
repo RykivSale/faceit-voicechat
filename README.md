@@ -22,6 +22,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/RykivSale/faceit-voicechat?style=social)](https://github.com/RykivSale/faceit-voicechat/stargazers)
 [![Downloads](https://img.shields.io/github/downloads/RykivSale/faceit-voicechat/total?label=downloads&logo=github)](https://github.com/RykivSale/faceit-voicechat/releases)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![Donate ETH/USDT](https://img.shields.io/badge/%E2%98%95%20donate-ETH%20%2F%20USDT-e00000)](#кинь-на-кофе)
 
 <br>
 
@@ -115,7 +116,21 @@ Fork of [boris-on/faceit-voicechat](https://github.com/boris-on/faceit-voicechat
 | UI | Prints and exits | **Local page** (drag-drop, past games) |
 | Updates | None | Checks GitHub Releases |
 
-**⭐ If this saves you a tilt-queue — star the repo. That's the only payment.**
+**⭐ If this saves you a tilt-queue — star the repo.** Или [кинь на кофе](#кинь-на-кофе).
+
+## Кинь на кофе
+
+Прога бесплатная. Звезда — уже кайф. Если совсем зашла — можно кинуть на кофе.
+
+**EVM-кошелёк** (ETH, USDT ERC-20, тот же адрес на Polygon / BSC / Arbitrum):
+
+```
+0x6DE7D78Bdd175B3b35343a2B9473444D3f6AeA16
+```
+
+[смотреть на Etherscan](https://etherscan.io/address/0x6DE7D78Bdd175B3b35343a2B9473444D3f6AeA16)
+
+Не слать TRC-20 / не-EVM сети — другой формат адреса, донат не дойдёт.
 
 ## `--cli` (old-school)
 
