@@ -74,6 +74,41 @@
       position: relative;
       z-index: 1;
     }
+    .update-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: #e00000;
+      color: #fff;
+      padding: 0.28rem 0.35rem 0.28rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1.2;
+      position: relative;
+      z-index: 4;
+      max-width: min(280px, 100%);
+    }
+    .update-chip a {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      white-space: nowrap;
+    }
+    .update-chip a:hover { color: #ffe8e8; }
+    .update-chip .update-close {
+      border: 0;
+      background: transparent;
+      color: #fff;
+      width: 1.5rem;
+      height: 1.5rem;
+      padding: 0;
+      border-radius: 999px;
+      line-height: 1;
+      font-size: 1.05rem;
+      cursor: pointer;
+    }
+    .update-chip .update-close:hover { background: rgba(0, 0, 0, 0.2); }
     .btn-primary {
       --bs-btn-bg: #e00000;
       --bs-btn-border-color: #e00000;
@@ -177,18 +212,7 @@
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
-    .status-banner .btn-update {
-      background: #fff;
-      color: #e00000;
-      border: none;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .status-banner .btn-update:hover {
-      background: #ffe8e8;
-      color: #b00000;
-    }
+    .status-banner .status-path {
       font-family: ui-monospace, "Cascadia Code", Consolas, "SF Mono", monospace;
       font-size: 13px;
       background: rgba(0, 0, 0, 0.28);
@@ -309,11 +333,11 @@
         <button class="btn btn-dark" id="quitBtn" type="button">
           <i class="bi bi-x-lg me-1"></i><span id="quitLabel"></span>
         </button>
+        <div id="updateBanner" class="d-none"></div>
       </div>
       <img class="brand-hero" src="/vendor/logo.png" alt="" />
     </header>
 
-    <div id="updateBanner" class="d-none"></div>
     <div id="banners"></div>
 
     <div class="mb-4" id="dropCard">
@@ -562,9 +586,9 @@
         quitDone: "Сервер остановлен, вкладку можно закрыть.",
         foot: "Работает только на этом компьютере (127.0.0.1). Не закрывай окно программы, пока открыта страница.",
         err: "Ошибка",
-        updateTitle: "Вышла новая версия",
-        updateBody: "У тебя v{current}, свежак v{latest}.",
-        updateBtn: "Скачать"
+        updateTitle: "Новая v{latest}",
+        updateBtn: "Скачать",
+        updateClose: "Закрыть"
       },
       en: {
         title: "LET'S START",
@@ -630,9 +654,9 @@
         quitDone: "Server stopped. You can close this tab.",
         foot: "This page is local only (127.0.0.1). Leave the program window open while you use it.",
         err: "Error",
-        updateTitle: "New version available",
-        updateBody: "You have v{current}. Latest is v{latest}.",
-        updateBtn: "Download"
+        updateTitle: "New v{latest}",
+        updateBtn: "Download",
+        updateClose: "Dismiss"
       }
     };
 
@@ -703,23 +727,25 @@
       if (state) render(state);
     }
 
+    function updateDismissKey(ver) { return "fv-hide-update-" + ver; }
+
     function paintUpdate() {
       const box = $("updateBanner");
-      if (!updateInfo || !updateInfo.newer) {
+      if (!updateInfo || !updateInfo.newer || localStorage.getItem(updateDismissKey(updateInfo.latest))) {
         box.className = "d-none";
         box.innerHTML = "";
         return;
       }
       const x = t();
-      const body = x.updateBody.replace("{current}", updateInfo.current).replace("{latest}", updateInfo.latest);
-      box.className = "status-banner mb-4";
-      box.innerHTML = `<div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-        <div>
-          <div class="status-title">${escapeHtml(x.updateTitle)}</div>
-          <div class="mt-1">${escapeHtml(body)}</div>
-        </div>
-        <a class="btn btn-update" href="${escapeAttr(updateInfo.url)}" target="_blank" rel="noopener">${escapeHtml(x.updateBtn)}</a>
-      </div>`;
+      const title = x.updateTitle.replace("{latest}", updateInfo.latest);
+      box.className = "update-chip";
+      box.innerHTML = `<span>${escapeHtml(title)}</span>
+        <a href="${escapeAttr(updateInfo.url)}" target="_blank" rel="noopener">${escapeHtml(x.updateBtn)}</a>
+        <button class="update-close" type="button" title="${escapeAttr(x.updateClose)}" aria-label="${escapeAttr(x.updateClose)}">×</button>`;
+      box.querySelector(".update-close").addEventListener("click", () => {
+        localStorage.setItem(updateDismissKey(updateInfo.latest), "1");
+        paintUpdate();
+      });
     }
 
     async function checkUpdate() {
