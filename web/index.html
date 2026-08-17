@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>faceit-voicechat</title>
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --bg-2: #12141b;
+      --card: #171a22;
+      --line: #2a2f3c;
+      --text: #f4f1ea;
+      --muted: #9aa3b5;
+      --orange: #ff5a1f;
+      --orange-2: #ff8a4c;
+      --green: #3dd68c;
+      --red: #ff5d73;
+      --key: #232736;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background:
+        radial-gradient(1200px 500px at 10% -10%, rgba(255, 90, 31, 0.16), transparent 50%),
+        radial-gradient(900px 400px at 100% 0%, rgba(61, 214, 140, 0.08), transparent 45%),
+        var(--bg);
+      color: var(--text);
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 28px 20px 64px; }
+    header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 16px; margin-bottom: 22px;
+    }
+    .brand { display: flex; gap: 14px; align-items: center; }
+    .mark {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--orange), #c43a00);
+      display: grid; place-items: center; font-weight: 800; letter-spacing: -0.04em;
+      box-shadow: 0 8px 24px rgba(255, 90, 31, 0.28);
+    }
+    h1 { margin: 0; font-size: 22px; letter-spacing: -0.03em; }
+    .sub { color: var(--muted); font-size: 14px; margin-top: 2px; }
+    .tools { display: flex; gap: 8px; flex-wrap: wrap; }
+    button, .btn {
+      appearance: none; border: 1px solid var(--line); background: var(--key);
+      color: var(--text); border-radius: 10px; padding: 10px 14px; cursor: pointer;
+      font: inherit; font-weight: 600;
+    }
+    button:hover, .btn:hover { border-color: #42485a; }
+    button.primary {
+      background: var(--orange); border-color: transparent; color: #1a0900;
+    }
+    button.primary:hover { filter: brightness(1.05); }
+    button.ghost { background: transparent; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+      padding: 18px; margin-bottom: 14px;
+    }
+    .card h2 { margin: 0 0 10px; font-size: 15px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+    .drop {
+      border: 1.5px dashed #3a4154; border-radius: 14px; padding: 28px 16px;
+      text-align: center; color: var(--muted); cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .drop.over, .drop:hover { border-color: var(--orange); background: rgba(255, 90, 31, 0.06); }
+    .drop strong { color: var(--text); }
+    .file-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--key); border: 1px solid var(--line); border-radius: 999px;
+      padding: 8px 12px; margin-top: 12px; color: var(--text); font-size: 13px;
+    }
+    .cmd {
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      background: #0e1016; border: 1px solid var(--line); border-radius: 12px;
+      padding: 12px 14px; overflow-x: auto; white-space: pre-wrap; word-break: break-word;
+      font-size: 13px; line-height: 1.45;
+    }
+    .row { display: flex; gap: 8px; align-items: stretch; }
+    .row .cmd { flex: 1; }
+    .keys { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 4px; }
+    .keycap {
+      background: var(--key); border: 1px solid var(--line); border-radius: 12px;
+      padding: 10px 12px; min-width: 120px;
+    }
+    .keycap kbd {
+      display: inline-block; background: #0e1016; border: 1px solid #3a4154;
+      border-bottom-width: 3px; border-radius: 7px; padding: 2px 8px;
+      font-family: inherit; font-weight: 700;
+    }
+    .keycap span { display: block; color: var(--muted); font-size: 12px; margin-top: 6px; }
+    .hint {
+      color: var(--muted); font-size: 13px; line-height: 1.5; margin: 8px 0 0;
+    }
+    .banner {
+      border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; font-size: 14px;
+      border: 1px solid var(--line);
+    }
+    .banner.ok { background: rgba(61, 214, 140, 0.1); border-color: rgba(61, 214, 140, 0.35); }
+    .banner.warn { background: rgba(255, 90, 31, 0.1); border-color: rgba(255, 90, 31, 0.35); }
+    .banner.err { background: rgba(255, 93, 115, 0.1); border-color: rgba(255, 93, 115, 0.35); }
+    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    input[type="text"] {
+      width: 100%; background: #0e1016; color: var(--text); border: 1px solid var(--line);
+      border-radius: 10px; padding: 10px 12px; font: inherit;
+    }
+    input[type="text"]:focus { outline: 2px solid rgba(255, 90, 31, 0.45); border-color: var(--orange); }
+    .found { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .found button {
+      text-align: left; font-weight: 500; font-size: 13px;
+      word-break: break-all;
+    }
+    .found button.active { border-color: var(--orange); }
+    .key-inputs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    @media (max-width: 640px) { .key-inputs { grid-template-columns: 1fr; } .row { flex-direction: column; } }
+    ol.howto { margin: 0; padding-left: 18px; color: var(--muted); }
+    ol.howto li { margin: 8px 0; }
+    ol.howto b { color: var(--text); }
+    .status { font-size: 13px; color: var(--muted); min-height: 1.2em; margin-top: 8px; }
+    .overlay {
+      position: fixed; inset: 0; background: rgba(8, 9, 12, 0.72);
+      display: none; place-items: center; z-index: 20;
+    }
+    .overlay.show { display: grid; }
+    .spinner {
+      width: 36px; height: 36px; border: 3px solid #3a4154; border-top-color: var(--orange);
+      border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hidden { display: none !important; }
+    footer { color: var(--muted); font-size: 12px; margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="mark">VC</div>
+        <div>
+          <h1>faceit-voicechat</h1>
+          <div class="sub" id="subtitle"></div>
+        </div>
+      </div>
+      <div class="tools">
+        <button class="ghost" id="langBtn" type="button">EN</button>
+        <button class="ghost" id="quitBtn" type="button"></button>
+      </div>
+    </header>
+
+    <div id="banners"></div>
+
+    <section class="card">
+      <h2 id="tDemo"></h2>
+      <div class="drop" id="drop">
+        <div><strong id="dropTitle"></strong></div>
+        <div class="hint" id="dropHint"></div>
+        <div class="file-pill hidden" id="filePill"></div>
+      </div>
+      <input id="file" type="file" accept=".dem,.zst" hidden />
+    </section>
+
+    <section class="card hidden" id="result">
+      <h2 id="tBind"></h2>
+      <div class="row">
+        <div class="cmd" id="bindCmd"></div>
+        <button class="primary" id="copyBind" type="button"></button>
+      </div>
+      <div class="keys">
+        <div class="keycap"><kbd id="k0">F5</kbd><span id="k0h"></span></div>
+        <div class="keycap"><kbd id="k1">F6</kbd><span id="k1h"></span></div>
+        <div class="keycap"><kbd id="k2">F7</kbd><span id="k2h"></span></div>
+      </div>
+      <p class="hint" id="bindHint"></p>
+      <h2 id="tPlay" style="margin-top:18px"></h2>
+      <div class="row">
+        <div class="cmd" id="playCmd"></div>
+        <button id="copyPlay" type="button"></button>
+      </div>
+      <p class="status" id="copyStatus"></p>
+      <button id="copyDemoBtn" type="button" class="hidden"></button>
+    </section>
+
+    <section class="card">
+      <h2 id="tSettings"></h2>
+      <label for="folder" id="folderLabel"></label>
+      <div class="row">
+        <input id="folder" type="text" spellcheck="false" />
+        <button id="findBtn" type="button"></button>
+        <button class="primary" id="saveFolder" type="button"></button>
+      </div>
+      <p class="hint" id="folderHint"></p>
+      <p class="hint hidden" id="folderWarn"></p>
+      <div class="found" id="found"></div>
+      <div style="height:14px"></div>
+      <label id="keysLabel"></label>
+      <div class="key-inputs">
+        <input id="key0" type="text" maxlength="16" />
+        <input id="key1" type="text" maxlength="16" />
+        <input id="key2" type="text" maxlength="16" />
+      </div>
+      <div style="margin-top:10px">
+        <button class="primary" id="saveKeys" type="button"></button>
+      </div>
+      <p class="status" id="settingsStatus"></p>
+    </section>
+
+    <section class="card">
+      <h2 id="tHow"></h2>
+      <ol class="howto" id="howto"></ol>
+    </section>
+    <footer id="foot"></footer>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div style="text-align:center">
+      <div class="spinner"></div>
+      <div id="overlayText"></div>
+    </div>
+  </div>
+
+  <script>
+    const i18n = {
+      ru: {
+        subtitle: "Локальная страница: бинды голосового чата для демки CS2",
+        quit: "Выйти",
+        demo: "Демка",
+        dropTitle: "Перетащи .dem сюда или нажми, чтобы выбрать файл",
+        dropHint: "Подойдёт обычная демка или сжатая .dem.zst. Если открыл файл через «Open with», он уже должен быть здесь.",
+        bind: "Бинд в консоль CS2",
+        copy: "Копировать",
+        copied: "Скопировано",
+        k0: "голоса CT",
+        k1: "голоса T",
+        k2: "все голоса",
+        bindHint: "Открой консоль в CS2 клавишей ~ и вставь одну строку. После этого клавиши переключают, чьи голоса слышно на записи.",
+        play: "Команда playdemo",
+        copyDemo: "Скопировать демку в папку CS2",
+        copiedDemo: "Демка скопирована в папку игры — playdemo найдёт файл.",
+        notCopied: "Папка CS2 не задана, поэтому демка не скопирована. Ниже можно найти стандартный путь.",
+        copyFail: "Не удалось скопировать демку",
+        settings: "Настройки",
+        folderLabel: "Папка игры (…\\Counter-Strike Global Offensive\\game\\csgo)",
+        folderHint: "Именно game\\csgo — туда CS2 кладёт демки для playdemo. Нажми «Найти CS2»: проверим Steam и стандартные диски.",
+        folderWarn: "Путь сохранён, но не похож на game\\csgo. Если playdemo не находит файл — выбери папку csgo внутри game.",
+        find: "Найти CS2",
+        save: "Сохранить",
+        foundNone: "CS2 автоматически не нашёлся. Поставь Steam-путь вручную: Steam\\steamapps\\common\\Counter-Strike Global Offensive\\game\\csgo",
+        found: "Нашли такие папки — нажми, чтобы подставить:",
+        useThis: "Использовать этот путь",
+        keysLabel: "Клавиши: CT / T / все",
+        saveKeys: "Сохранить клавиши",
+        saved: "Сохранено",
+        how: "Как пользоваться",
+        howItems: [
+          "Открой демку на этой странице (или через ПКМ → Open with на .dem).",
+          "Если папка CS2 пустая — нажми «Найти CS2» и сохрани найденный путь. Тогда демка скопируется сама.",
+          "Скопируй бинд, в игре нажми ~ и вставь в консоль.",
+          "Вставь playdemo … в консоль (или открой демку как обычно). Клавишами слушай CT, T или всех."
+        ],
+        overlay: "Читаем демку, это может занять минуту…",
+        quitDone: "Сервер остановлен, вкладку можно закрыть.",
+        foot: "Работает только на этом компьютере (127.0.0.1). Не закрывай окно программы, пока открыта страница.",
+        err: "Ошибка"
+      },
+      en: {
+        subtitle: "Local page: CS2 demo voice-listen binds",
+        quit: "Quit",
+        demo: "Demo",
+        dropTitle: "Drop a .dem here, or click to choose a file",
+        dropHint: "Plain .dem or compressed .dem.zst. If you used Open with, the file should already be loaded.",
+        bind: "CS2 console bind",
+        copy: "Copy",
+        copied: "Copied",
+        k0: "CT voices",
+        k1: "T voices",
+        k2: "all voices",
+        bindHint: "Open the CS2 console with ~ and paste this single line. The keys then switch which team you hear in the demo.",
+        play: "playdemo command",
+        copyDemo: "Copy demo into the CS2 folder",
+        copiedDemo: "Demo copied into the game folder, so playdemo can find it.",
+        notCopied: "Game folder is not set, so the demo was not copied. Try Find CS2 below.",
+        copyFail: "Could not copy the demo",
+        settings: "Settings",
+        folderLabel: "Game folder (…\\Counter-Strike Global Offensive\\game\\csgo)",
+        folderHint: "Use the game\\csgo folder — that is where CS2 looks for playdemo files. Click Find CS2 to scan Steam libraries and common drives.",
+        folderWarn: "Saved, but this does not look like game\\csgo. If playdemo cannot find the file, pick the csgo folder inside game.",
+        find: "Find CS2",
+        save: "Save",
+        foundNone: "CS2 was not found automatically. Set the Steam path yourself: Steam\\steamapps\\common\\Counter-Strike Global Offensive\\game\\csgo",
+        found: "Found these folders — click one to use it:",
+        useThis: "Use this path",
+        keysLabel: "Keys: CT / T / all",
+        saveKeys: "Save keys",
+        saved: "Saved",
+        how: "How to use",
+        howItems: [
+          "Open a demo here (or right-click a .dem → Open with this app).",
+          "If the CS2 folder is empty, click Find CS2 and save the path. The demo is then copied automatically.",
+          "Copy the bind, press ~ in-game, and paste it into the console.",
+          "Paste playdemo … in the console (or open the demo as usual). Use the keys to hear CT, T, or everyone."
+        ],
+        overlay: "Reading the demo, this can take a minute…",
+        quitDone: "Server stopped. You can close this tab.",
+        foot: "This page is local only (127.0.0.1). Leave the program window open while you use it.",
+        err: "Error"
+      }
+    };
+
+    let lang = localStorage.getItem("fv-lang") || ((navigator.language || "en").toLowerCase().startsWith("ru") ? "ru" : "en");
+    let state = null;
+
+    const $ = (id) => document.getElementById(id);
+
+    function t() { return i18n[lang]; }
+
+    function applyLang() {
+      const x = t();
+      document.documentElement.lang = lang;
+      $("subtitle").textContent = x.subtitle;
+      $("quitBtn").textContent = x.quit;
+      $("tDemo").textContent = x.demo;
+      $("dropTitle").textContent = x.dropTitle;
+      $("dropHint").textContent = x.dropHint;
+      $("tBind").textContent = x.bind;
+      $("copyBind").textContent = x.copy;
+      $("k0h").textContent = x.k0;
+      $("k1h").textContent = x.k1;
+      $("k2h").textContent = x.k2;
+      $("bindHint").textContent = x.bindHint;
+      $("tPlay").textContent = x.play;
+      $("copyPlay").textContent = x.copy;
+      $("copyDemoBtn").textContent = x.copyDemo;
+      $("tSettings").textContent = x.settings;
+      $("folderLabel").textContent = x.folderLabel;
+      $("folderHint").textContent = x.folderHint;
+      $("folderWarn").textContent = x.folderWarn;
+      $("findBtn").textContent = x.find;
+      $("saveFolder").textContent = x.save;
+      $("keysLabel").textContent = x.keysLabel;
+      $("saveKeys").textContent = x.saveKeys;
+      $("tHow").textContent = x.how;
+      $("howto").innerHTML = x.howItems.map((s) => `<li>${s}</li>`).join("");
+      $("overlayText").textContent = x.overlay;
+      $("foot").textContent = x.foot;
+      $("langBtn").textContent = lang === "ru" ? "EN" : "RU";
+      if (state) render(state);
+    }
+
+    function banner(kind, html) {
+      return `<div class="banner ${kind}">${html}</div>`;
+    }
+
+    function render(s) {
+      state = s;
+      const x = t();
+      $("folder").value = s.config.gameFolder || "";
+      (s.config.keys || ["F5", "F6", "F7"]).forEach((k, i) => {
+        $("key" + i).value = k;
+        $("k" + i).textContent = k;
+      });
+
+      const banners = [];
+      if (s.demo.error) banners.push(banner("err", x.err + ": " + escapeHtml(s.demo.error)));
+      if (!s.config.gameFolder && (s.detectedFolders || []).length) {
+        banners.push(banner("warn", x.found + " <b>" + escapeHtml(s.detectedFolders[0]) + "</b>"));
+      }
+      $("banners").innerHTML = banners.join("");
+
+      if (s.demo.loaded) {
+        $("result").classList.remove("hidden");
+        $("bindCmd").textContent = s.demo.bind;
+        $("playCmd").textContent = s.demo.playdemo;
+        $("filePill").classList.remove("hidden");
+        $("filePill").textContent = s.demo.name;
+        if (s.demo.copied) {
+          $("copyStatus").textContent = x.copiedDemo + " " + s.demo.copiedTo;
+          $("copyDemoBtn").classList.add("hidden");
+        } else if (!s.config.gameFolder) {
+          $("copyStatus").textContent = x.notCopied;
+          $("copyDemoBtn").classList.add("hidden");
+        } else {
+          $("copyStatus").textContent = s.demo.copyError ? (x.copyFail + ": " + s.demo.copyError) : "";
+          $("copyDemoBtn").classList.remove("hidden");
+        }
+      }
+
+      const folders = s.detectedFolders || [];
+      $("folderWarn").classList.toggle("hidden", !s.config.gameFolder || s.looksLikeGameFolder);
+      renderFound(folders, s.config.gameFolder);
+    }
+
+    function renderFound(folders, current) {
+      const box = $("found");
+      const x = t();
+      if (!folders.length) {
+        box.innerHTML = `<p class="hint">${x.foundNone}</p>`;
+        return;
+      }
+      box.innerHTML = `<p class="hint">${x.found}</p>` + folders.map((p) => {
+        const active = p === current ? " active" : "";
+        return `<button type="button" class="${active}" data-path="${escapeAttr(p)}">${escapeHtml(p)}</button>`;
+      }).join("");
+      box.querySelectorAll("button[data-path]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          $("folder").value = btn.dataset.path;
+          saveConfig({ gameFolder: btn.dataset.path });
+        });
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+    function escapeAttr(s) { return escapeHtml(s); }
+
+    async function api(path, opts) {
+      const res = await fetch(path, opts);
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text.trim() || res.statusText);
+      }
+      const ct = res.headers.get("content-type") || "";
+      if (ct.includes("application/json")) return res.json();
+      return res.text();
+    }
+
+    async function refresh() {
+      render(await api("/api/state"));
+    }
+
+    async function saveConfig(body) {
+      try {
+        render(await api("/api/config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        }));
+        $("settingsStatus").textContent = t().saved;
+      } catch (e) {
+        $("settingsStatus").textContent = t().err + ": " + e.message;
+      }
+    }
+
+    async function uploadFile(file) {
+      const fd = new FormData();
+      fd.append("demo", file, file.name);
+      $("overlay").classList.add("show");
+      try {
+        render(await api("/api/demo", { method: "POST", body: fd }));
+      } catch (e) {
+        $("banners").innerHTML = banner("err", t().err + ": " + escapeHtml(e.message));
+      } finally {
+        $("overlay").classList.remove("show");
+      }
+    }
+
+    async function copyText(text, btn) {
+      await navigator.clipboard.writeText(text);
+      const old = btn.textContent;
+      btn.textContent = t().copied;
+      setTimeout(() => { btn.textContent = old; }, 1200);
+    }
+
+    $("langBtn").addEventListener("click", () => {
+      lang = lang === "ru" ? "en" : "ru";
+      localStorage.setItem("fv-lang", lang);
+      applyLang();
+    });
+    $("quitBtn").addEventListener("click", async () => {
+      try { await api("/api/quit", { method: "POST" }); } catch (_) {}
+      $("banners").innerHTML = banner("ok", t().quitDone);
+    });
+    $("drop").addEventListener("click", () => $("file").click());
+    $("drop").addEventListener("dragover", (e) => { e.preventDefault(); $("drop").classList.add("over"); });
+    $("drop").addEventListener("dragleave", () => $("drop").classList.remove("over"));
+    $("drop").addEventListener("drop", (e) => {
+      e.preventDefault();
+      $("drop").classList.remove("over");
+      if (e.dataTransfer.files[0]) uploadFile(e.dataTransfer.files[0]);
+    });
+    $("file").addEventListener("change", () => {
+      if ($("file").files[0]) uploadFile($("file").files[0]);
+    });
+    $("copyBind").addEventListener("click", () => copyText($("bindCmd").textContent, $("copyBind")));
+    $("copyPlay").addEventListener("click", () => copyText($("playCmd").textContent, $("copyPlay")));
+    $("copyDemoBtn").addEventListener("click", async () => {
+      try { render(await api("/api/copy", { method: "POST" })); }
+      catch (e) { $("copyStatus").textContent = t().err + ": " + e.message; }
+    });
+    $("findBtn").addEventListener("click", async () => {
+      $("settingsStatus").textContent = "…";
+      try { render(await api("/api/detect")); $("settingsStatus").textContent = ""; }
+      catch (e) { $("settingsStatus").textContent = t().err + ": " + e.message; }
+    });
+    $("saveFolder").addEventListener("click", () => saveConfig({ gameFolder: $("folder").value }));
+    $("saveKeys").addEventListener("click", () => saveConfig({ keys: [$("key0").value, $("key1").value, $("key2").value] }));
+
+    applyLang();
+    refresh().catch((e) => {
+      $("banners").innerHTML = banner("err", t().err + ": " + escapeHtml(e.message));
+    });
+  </script>
+</body>
+</html>

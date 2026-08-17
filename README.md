@@ -13,8 +13,8 @@
 This script generates commands to listen only to your team or the opponents' team in the cs2 demo.
 
 This is a fork of [boris-on/faceit-voicechat](https://github.com/boris-on/faceit-voicechat) that turns
-the original one-shot console printout into an actual usable tool: one bind line instead of three,
-a real menu, saved settings, and automatic demo handling.
+the original one-shot console printout into an actual usable tool: a local web page, one bind line
+instead of three, saved settings, CS2 folder auto-detect, and automatic demo handling.
 
 **⭐ If this saves you time, please star the repo — it's the only payment I'm asking for.**
 
@@ -27,17 +27,32 @@ a real menu, saved settings, and automatic demo handling.
 | Settings | None | **Persistent settings** (`%AppData%`), survive restarts |
 | Demo file | You move it manually to your game folder | **Auto-copied** to your configured game folder |
 | `playdemo` command | Not provided | **Printed automatically** with the correct filename |
-| Interface | Prints once, then exits | **Interactive menu**: get bind / settings / quit, reusable without relaunching |
+| Interface | Prints once, then exits | **Local web page** (or `--cli` menu): copy buttons, hints, CS2 auto-detect |
 
 ## How to use
 
 1. Right-click a `.dem` file
 2. Choose **"Open with..." → select `faceit-voicechat.exe`**
-3. Press **Enter** to get the bind command, or **S** for settings
+3. A local page opens in your browser (`http://127.0.0.1:8765`)
+4. Copy the bind, paste it into the CS2 console (`~`)
+
+You can also launch the exe with no file and drop a `.dem` / `.dem.zst` onto the page.
+
+Leave the program window open while you use the page. Press **Quit** on the page or Ctrl+C in the console to stop.
 
 Download the latest build: **[Releases → faceit-voicechat.exe](https://github.com/RykivSale/faceit-voicechat/releases/latest)**
 
-## Menu
+## Local page
+
+- **Bind** — one ready-to-paste line, with a copy button. Default keys: **F5** CT, **F6** T, **F7** all.
+- **playdemo** — printed with the correct filename, also copyable.
+- **Find CS2** — scans Steam libraries and common install paths (`...\Counter-Strike Global Offensive\game\csgo`). If a folder is saved, the demo is copied there automatically.
+- **Keybinds** — change F5/F6/F7 to anything CS2 accepts.
+- Language toggle: Russian / English.
+
+Settings are saved to `%AppData%\faceit-voicechat\config.json` and persist between runs.
+
+## Console menu (`--cli`)
 
 ```
 Press Enter - get bind
@@ -57,16 +72,16 @@ Press Q - quit
   3. Back
 - **Q** quits.
 
-Settings are saved to `%AppData%\faceit-voicechat\config.json` and persist between runs.
-
 ## Changes in this fork
 
+- Default UI is a local browser page with copy buttons, hints, and drag-and-drop demos.
+- **Find CS2** tries Steam libraries and common `game\csgo` paths instead of typing the folder by hand.
 - Bind commands are now emitted as a single `bind "KEY" "..."; bind "KEY" "..."` line instead of
   three separate command blocks.
-- Added an interactive menu (get bind / settings / quit) instead of a one-shot print.
-- Added a settings screen to configure a game folder and custom keybinds (default `F5`, `F6`, `F7`).
+- Added saved settings and custom keybinds (default `F5`, `F6`, `F7`).
 - When a game folder is set, the opened demo is copied there automatically and a matching
   `playdemo <name>` command is printed.
+- Old console menu is still available with `--cli`.
 
 ## License
 
