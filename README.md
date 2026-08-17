@@ -22,7 +22,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/RykivSale/faceit-voicechat?style=social)](https://github.com/RykivSale/faceit-voicechat/stargazers)
 [![Downloads](https://img.shields.io/github/downloads/RykivSale/faceit-voicechat/total?label=downloads&logo=github)](https://github.com/RykivSale/faceit-voicechat/releases)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
-[![Кинь на кофе](https://img.shields.io/badge/%E2%98%95%20donate-dalink-e00000)](https://dalink.to/rykisosali)
+[![☕ coffee](https://img.shields.io/badge/%E2%98%95%20coffee-dalink-FFDD00)](https://dalink.to/rykisosali)
+[![💰 crypto](https://img.shields.io/badge/%F0%9F%92%B0%20crypto-ETH%2FUSDT-26a17b)](#кинь-на-кофе)
 
 <br>
 
@@ -116,19 +117,29 @@ Fork of [boris-on/faceit-voicechat](https://github.com/boris-on/faceit-voicechat
 | UI | Prints and exits | **Local page** (drag-drop, past games) |
 | Updates | None | Checks GitHub Releases |
 
-**⭐ If this saves you a tilt-queue — star the repo.** Или [кинь на кофе](https://dalink.to/rykisosali).
+**⭐ If this saves you a tilt-queue — star the repo.** Или ☕ [кофе](https://dalink.to/rykisosali) / 💰 [крипта](#кинь-на-кофе).
 
-## Кинь на кофе
+<a id="кинь-на-кофе"></a>
+
+## ☕💰 Кинь на кофе
 
 Прога бесплатная. Звезда — уже кайф. Если совсем зашла — можно кинуть на кофе.
 
 <div align="center">
 
 <a href="https://dalink.to/rykisosali">
-  <img src="https://img.shields.io/badge/%E2%98%95%20%20%D0%9A%D0%98%D0%9D%D0%AC%20%D0%9D%D0%90%20%D0%9A%D0%9E%D0%A4%D0%95-dalink.to-e00000?style=for-the-badge" alt="Кинь на кофе — dalink" height="48">
+  <img src="https://img.shields.io/badge/%E2%98%95%20Buy%20me%20a%20coffee-dalink-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="☕ Buy me a coffee" height="48">
+</a>
+&nbsp;
+<a href="https://etherscan.io/address/0x6DE7D78Bdd175B3b35343a2B9473444D3f6AeA16">
+  <img src="https://img.shields.io/badge/%F0%9F%92%B0%20Donate%20crypto-ETH%20%2F%20USDT-26a17b?style=for-the-badge&logo=ethereum&logoColor=white" alt="💰 Donate crypto" height="48">
 </a>
 
-**[☕  dalink.to/rykisosali](https://dalink.to/rykisosali)**
+<br>
+
+☕ **[dalink.to/rykisosali](https://dalink.to/rykisosali)**
+&nbsp;·&nbsp;
+💰 **[0x6DE7…eA16](https://etherscan.io/address/0x6DE7D78Bdd175B3b35343a2B9473444D3f6AeA16)**
 
 </div>
 
@@ -137,8 +148,6 @@ Fork of [boris-on/faceit-voicechat](https://github.com/boris-on/faceit-voicechat
 ```
 0x6DE7D78Bdd175B3b35343a2B9473444D3f6AeA16
 ```
-
-[смотреть на Etherscan](https://etherscan.io/address/0x6DE7D78Bdd175B3b35343a2B9473444D3f6AeA16)
 
 Не слать TRC-20 / не-EVM сети — другой формат адреса, донат не дойдёт.
 
