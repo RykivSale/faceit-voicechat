@@ -1,106 +1,175 @@
 <div align="center">
 
-# ⬇️ [**DOWNLOAD HERE**](https://github.com/RykivSale/faceit-voicechat/releases/latest) ⬇️
+<img src="docs/logo.png" width="128" alt="faceit-voicechat">
+
+# САМЫЙ ЛЕГКИЙ СПОСОБ<br>ГРУЗИТЬ ДЕМКИ FACEIT<br>с VOICE CHAT!
+
+**Кинул `.dem` → скопировал бинд → вставил в консоль CS2.**<br>
+Слышишь только CT, только T или всех — на трёх клавишах.
+
+<br>
+
+<a href="https://github.com/RykivSale/faceit-voicechat/releases/latest/download/faceit-voicechat.exe">
+  <img src="https://img.shields.io/badge/%E2%AC%87%20%20%D0%A1%D0%9A%D0%90%D0%A7%D0%90%D0%A2%D0%AC-Windows%20.exe-e00000?style=for-the-badge&logo=windows&logoColor=white" alt="Скачать Windows .exe" height="52">
+</a>
+&nbsp;
+<a href="https://github.com/RykivSale/faceit-voicechat/releases/latest">
+  <img src="https://img.shields.io/github/v/release/RykivSale/faceit-voicechat?style=for-the-badge&label=LATEST&color=111111" alt="Latest release" height="52">
+</a>
+
+<br>
+
+[![GitHub stars](https://img.shields.io/github/stars/RykivSale/faceit-voicechat?style=social)](https://github.com/RykivSale/faceit-voicechat/stargazers)
+[![Downloads](https://img.shields.io/github/downloads/RykivSale/faceit-voicechat/total?label=downloads&logo=github)](https://github.com/RykivSale/faceit-voicechat/releases)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+
+<br>
+
+**[⬇️  СКАЧАТЬ faceit-voicechat.exe](https://github.com/RykivSale/faceit-voicechat/releases/latest/download/faceit-voicechat.exe)**
+&nbsp;·&nbsp;
+[все релизы](https://github.com/RykivSale/faceit-voicechat/releases/latest)
+
+<br>
+
+<img src="docs/screenshot-drop.png" width="920" alt="Кинь .dem на страницу — и всё">
+
+<p><sub>Перетащил демку — получил бинд. Без консольной магии и ручного копирования файлов.</sub></p>
 
 </div>
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/RykivSale/faceit-voicechat?style=social)](https://github.com/RykivSale/faceit-voicechat/stargazers)
-[![Latest release](https://img.shields.io/github/v/release/RykivSale/faceit-voicechat)](https://github.com/RykivSale/faceit-voicechat/releases/latest)
-[![Total downloads](https://img.shields.io/github/downloads/RykivSale/faceit-voicechat/total?label=downloads&logo=github)](https://github.com/RykivSale/faceit-voicechat/releases)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+## Зачем это
 
-# faceit-voicechat (enhanced fork)
+На FACEIT скачал демку, открыл в CS2 — а войса нет / слышно всех сразу / непонятно, кого слушать.
 
-This script generates commands to listen only to your team or the opponents' team in the cs2 demo.
+Эта прога делает из `.dem` **одну строку** для консоли:
 
-This is a fork of [boris-on/faceit-voicechat](https://github.com/boris-on/faceit-voicechat) that turns
-the original one-shot console printout into an actual usable tool: a local web page, one bind line
-instead of three, saved settings, CS2 folder auto-detect, automatic demo handling, and update checks.
+- **F5** — только CT
+- **F6** — только T
+- **F7** — все голоса
 
-**⭐ If this saves you time, please star the repo — it's the only payment I'm asking for.**
+Клавиши можно поменять. Демка сама улетает в папку CS2. `playdemo` тоже копируется одной кнопкой.
 
-## Why use this fork instead of the original?
+<img src="docs/screenshot-games.png" width="920" alt="Прошлые игры — кнопка Запустить">
+
+Прошлые катки из папки CS2 — иконка карты, дата, красная **ЗАПУСТИТЬ**. Счёт спрятан под спойлер, чтобы не спойлерить.
+
+<div align="center">
+
+<a href="https://github.com/RykivSale/faceit-voicechat/releases/latest/download/faceit-voicechat.exe">
+  <img src="https://img.shields.io/badge/%E2%AC%87%20%20%D0%A1%D0%9A%D0%90%D0%A7%D0%90%D0%A2%D0%AC-faceit--voicechat.exe-e00000?style=for-the-badge&logo=windows&logoColor=white" alt="Скачать .exe" height="48">
+</a>
+
+</div>
+
+## Как юзать (30 секунд)
+
+1. **[Скачай `.exe`](https://github.com/RykivSale/faceit-voicechat/releases/latest/download/faceit-voicechat.exe)** → двойной клик.
+2. Окно консоли **не закрывай** — это сервер. В браузере откроется `http://127.0.0.1:8765`.
+3. Первый запуск: **Найти CS2** (или укажи папку `...\game\csgo` сам).
+4. Кинь `.dem` / `.dem.zst` на страницу *или* ПКМ по демке → Open with → этот exe.
+5. В CS2 жми `~` → вставь **бинд** → вставь **playdemo**.
+
+Всё. F5 / F6 / F7 переключают, чьи войса слышно на записи.
+
+Можно не кидать файл каждый раз: вкладка **Прошлые игры** → **Запустить**.
+
+## Что умеет
+
+|  |  |
+|---|---|
+| 🖱️ Драг-н-дроп | `.dem` и сжатые `.dem.zst` |
+| 📋 Один бинд | Не три блока, а **одна строка** — копипаст и готово |
+| 📁 Автокопия | Демка сама кладётся в `game\csgo` (если уже там — не копирует повторно) |
+| ▶️ playdemo | Команда с правильным именем файла, кнопка Copy |
+| 🎮 Прошлые игры | Демки из папки CS2 + иконка карты + запуск |
+| 🔍 Найти CS2 | Сам ищет Steam-библиотеки |
+| ⌨️ Ребинд | F5 / F6 / F7 или любые клавиши, которые ест CS2 |
+| 🇷🇺 / 🇬🇧 | Русский и английский |
+| 🔄 Апдейты | На старте чекает GitHub Releases |
+
+Настройки живут в `%AppData%\faceit-voicechat\config.json` и не слетают.
+
+<div align="center">
+
+### не нашёл кнопку? вот она ещё раз
+
+<a href="https://github.com/RykivSale/faceit-voicechat/releases/latest/download/faceit-voicechat.exe">
+  <img src="https://img.shields.io/badge/%E2%AC%87%20DOWNLOAD-Windows%20.exe-e00000?style=for-the-badge&logo=windows&logoColor=white" alt="Download Windows" height="52">
+</a>
+
+**[⬇️  faceit-voicechat.exe](https://github.com/RykivSale/faceit-voicechat/releases/latest/download/faceit-voicechat.exe)**
+
+</div>
+
+## This fork vs original
+
+Fork of [boris-on/faceit-voicechat](https://github.com/boris-on/faceit-voicechat): same `tv_listen_voice_indices` idea, actually usable UI.
 
 | | Original | This fork |
 |---|---|---|
-| Bind output | 3 separate command blocks you must copy one by one | **1 single line**, paste once and you're done |
-| Keybinds | Fixed, not configurable | **F5 / F6 / F7 by default, fully rebindable** in-app |
-| Settings | None | **Persistent settings** (`%AppData%`), survive restarts |
-| Demo file | You move it manually to your game folder | **Auto-copied** to your configured game folder |
-| `playdemo` command | Not provided | **Printed automatically** with the correct filename |
-| Interface | Prints once, then exits | **Local web page** (or `--cli` menu): copy buttons, hints, CS2 auto-detect |
-| Updates | None | **Checks GitHub Releases** on startup and notifies if a newer version is out |
+| Bind | 3 separate blocks | **1 line** |
+| Keys | Fixed | **F5 / F6 / F7**, rebindable |
+| Settings | None | Saved in `%AppData%` |
+| Demo file | You move it | **Auto-copied** into `game\csgo` |
+| `playdemo` | No | Printed + copy button |
+| UI | Prints and exits | **Local page** (drag-drop, past games) |
+| Updates | None | Checks GitHub Releases |
 
-## How to use
+**⭐ If this saves you a tilt-queue — star the repo. That's the only payment.**
 
-1. Right-click a `.dem` file
-2. Choose **"Open with..." → select `faceit-voicechat.exe`**
-3. A local page opens in your browser (`http://127.0.0.1:8765`)
-4. Copy the bind, paste it into the CS2 console (`~`)
-
-You can also launch the exe with no file and drop a `.dem` / `.dem.zst` onto the page.
-
-Leave the program window open while you use the page. Press **Quit** on the page or Ctrl+C in the console to stop.
-
-Download the latest build: **[Releases → faceit-voicechat.exe](https://github.com/RykivSale/faceit-voicechat/releases/latest)**
-
-## Local page
-
-- **Bind** — one ready-to-paste line, with a copy button. Default keys: **F5** CT, **F6** T, **F7** all.
-- **playdemo** — printed with the correct filename, also copyable.
-- **Find CS2** — scans Steam libraries and common install paths (`...\Counter-Strike Global Offensive\game\csgo`). If a folder is saved, the demo is copied there automatically.
-- **Keybinds** — change F5/F6/F7 to anything CS2 accepts.
-- Language toggle: Russian / English.
-
-Settings are saved to `%AppData%\faceit-voicechat\config.json` and persist between runs.
-
-## Console menu (`--cli`)
+## `--cli` (old-school)
 
 ```
-Press Enter - get bind
-Press S - settings
-Press U - check for updates
-Press Q - quit
+faceit-voicechat.exe --cli
 ```
 
-- **Enter** prints a single ready-to-paste bind line:
-  ```
-  bind "F5" "tv_listen_voice_indices <ct_mask>; tv_listen_voice_indices_h <ct_mask>"; bind "F6" "tv_listen_voice_indices <t_mask>; tv_listen_voice_indices_h <t_mask>"; bind "F7" "tv_listen_voice_indices -1; tv_listen_voice_indices_h -1"
-  ```
-  If a game folder is configured (see Settings), the demo is also copied there and a
-  `playdemo <filename>` command is printed.
-- **S** opens settings:
-  1. Set game folder — the folder demos get copied to (e.g. `...\Counter-Strike Global Offensive\game\csgo`)
-  2. Change keybinds — replace F5/F6/F7 with any keys you want
-  3. Auto-check for updates — on by default; checks GitHub Releases on startup and shows a notice if a newer version exists
-  4. Back
-- **U** checks GitHub Releases for a newer version and, if one is found, offers to open the download page.
-- **Q** quits.
+```
+Enter  — print bind
+S      — settings
+U      — check updates
+Q      — quit
+```
 
-On startup (when auto-check is enabled), `--cli` compares its version with the latest GitHub Release and prints a notice if an update is available. This does not interrupt the rest of the workflow if the check fails.
+Bind looks like this:
 
-## Changes in this fork
+```
+bind "F5" "tv_listen_voice_indices <ct>; tv_listen_voice_indices_h <ct>"; bind "F6" "tv_listen_voice_indices <t>; tv_listen_voice_indices_h <t>"; bind "F7" "tv_listen_voice_indices -1; tv_listen_voice_indices_h -1"
+```
 
-- Default UI is a local browser page with copy buttons, hints, and drag-and-drop demos.
-- **Find CS2** tries Steam libraries and common `game\csgo` paths instead of typing the folder by hand.
-- Bind commands are now emitted as a single `bind "KEY" "..."; bind "KEY" "..."` line instead of
-  three separate command blocks.
-- Added saved settings and custom keybinds (default `F5`, `F6`, `F7`).
-- When a game folder is set, the opened demo is copied there automatically and a matching
-  `playdemo <name>` command is printed.
-- Old console menu is still available with `--cli`.
-- Checks GitHub Releases for a newer version on startup (can be turned off in settings)
-  and from the `--cli` menu (`U`), then notifies if an update is available.
+If a game folder is set, the demo is copied there and `playdemo <file>` is printed too.
+
+## Build from source
+
+Windows exe (what we ship):
+
+```bash
+GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-X main.appVersion=1.2.1"
+```
+
+macOS / Linux: `go build .` then run the binary. Same local page.
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0.
+GNU General Public License v3.0 — see [LICENSE](LICENSE).
 
 Copyright (C) 2026 boris-on
 
 ## Attribution
 
-If you use this project in videos, streams, tutorials, articles, or public posts,
-please credit the author:
+If you use this in videos, streams, tutorials, or posts, credit the original author:
 
-Author: https://github.com/boris-on
+https://github.com/boris-on
+
+<div align="center">
+
+<br>
+
+<a href="https://github.com/RykivSale/faceit-voicechat/releases/latest/download/faceit-voicechat.exe">
+  <img src="https://img.shields.io/badge/%E2%AC%87%20%20%D0%A1%D0%9A%D0%90%D0%A7%D0%90%D0%A2%D0%AC-%D0%BF%D1%80%D1%8F%D0%BC%D0%BE%20%D1%81%D0%B5%D0%B9%D1%87%D0%B0%D1%81-e00000?style=for-the-badge&logo=windows&logoColor=white" alt="Скачать прямо сейчас" height="48">
+</a>
+
+<br><br>
+
+**скилл не качается. войсы на демке — да.**
+
+</div>
