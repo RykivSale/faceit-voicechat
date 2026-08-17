@@ -6,6 +6,7 @@
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/RykivSale/faceit-voicechat?style=social)](https://github.com/RykivSale/faceit-voicechat/stargazers)
 [![Latest release](https://img.shields.io/github/v/release/RykivSale/faceit-voicechat)](https://github.com/RykivSale/faceit-voicechat/releases/latest)
+[![Total downloads](https://img.shields.io/github/downloads/RykivSale/faceit-voicechat/total?label=downloads&logo=github)](https://github.com/RykivSale/faceit-voicechat/releases)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
 # faceit-voicechat (enhanced fork)
@@ -14,7 +15,7 @@ This script generates commands to listen only to your team or the opponents' tea
 
 This is a fork of [boris-on/faceit-voicechat](https://github.com/boris-on/faceit-voicechat) that turns
 the original one-shot console printout into an actual usable tool: a local web page, one bind line
-instead of three, saved settings, CS2 folder auto-detect, and automatic demo handling.
+instead of three, saved settings, CS2 folder auto-detect, automatic demo handling, and update checks.
 
 **⭐ If this saves you time, please star the repo — it's the only payment I'm asking for.**
 
@@ -28,6 +29,7 @@ instead of three, saved settings, CS2 folder auto-detect, and automatic demo han
 | Demo file | You move it manually to your game folder | **Auto-copied** to your configured game folder |
 | `playdemo` command | Not provided | **Printed automatically** with the correct filename |
 | Interface | Prints once, then exits | **Local web page** (or `--cli` menu): copy buttons, hints, CS2 auto-detect |
+| Updates | None | **Checks GitHub Releases** on startup and notifies if a newer version is out |
 
 ## How to use
 
@@ -57,6 +59,7 @@ Settings are saved to `%AppData%\faceit-voicechat\config.json` and persist betwe
 ```
 Press Enter - get bind
 Press S - settings
+Press U - check for updates
 Press Q - quit
 ```
 
@@ -69,8 +72,12 @@ Press Q - quit
 - **S** opens settings:
   1. Set game folder — the folder demos get copied to (e.g. `...\Counter-Strike Global Offensive\game\csgo`)
   2. Change keybinds — replace F5/F6/F7 with any keys you want
-  3. Back
+  3. Auto-check for updates — on by default; checks GitHub Releases on startup and shows a notice if a newer version exists
+  4. Back
+- **U** checks GitHub Releases for a newer version and, if one is found, offers to open the download page.
 - **Q** quits.
+
+On startup (when auto-check is enabled), `--cli` compares its version with the latest GitHub Release and prints a notice if an update is available. This does not interrupt the rest of the workflow if the check fails.
 
 ## Changes in this fork
 
@@ -82,6 +89,8 @@ Press Q - quit
 - When a game folder is set, the opened demo is copied there automatically and a matching
   `playdemo <name>` command is printed.
 - Old console menu is still available with `--cli`.
+- Checks GitHub Releases for a newer version on startup (can be turned off in settings)
+  and from the `--cli` menu (`U`), then notifies if an update is available.
 
 ## License
 

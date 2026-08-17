@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -50,6 +51,13 @@ func printUsage() {
 
 func runCLI(rawPath string) {
 	reader := bufio.NewReader(os.Stdin)
+	cfg := loadConfig()
+
+	var updateCh <-chan updateCheck
+	updateDeadline := time.Now().Add(5 * time.Second)
+	if cfg.CheckUpdates {
+		updateCh = startUpdateCheck()
+	}
 
 	if rawPath == "" {
 		fmt.Print("Enter path to .dem or .dem.zst file: ")
@@ -84,12 +92,40 @@ func runCLI(rawPath string) {
 		return
 	}
 
-	cfg := loadConfig()
+	var pendingUpdate updateCheck
+	gotUpdate := false
+	if updateCh != nil {
+		remaining := time.Until(updateDeadline)
+		if remaining <= 0 {
+			select {
+			case pendingUpdate = <-updateCh:
+				gotUpdate = true
+			default:
+			}
+		} else {
+			select {
+			case pendingUpdate = <-updateCh:
+				gotUpdate = true
+			case <-time.After(remaining):
+			}
+		}
+	}
 
 	for {
+		if !gotUpdate && updateCh != nil {
+			select {
+			case pendingUpdate = <-updateCh:
+				gotUpdate = true
+			default:
+			}
+		}
+
 		fmt.Println()
+		fmt.Printf("faceit-voicechat v%s\n", appVersion)
+		printUpdateBanner(pendingUpdate)
 		fmt.Println("Press Enter - get bind")
 		fmt.Println("Press S - settings")
+		fmt.Println("Press U - check for updates")
 		fmt.Println("Press Q - quit")
 		fmt.Print("> ")
 
@@ -102,6 +138,9 @@ func runCLI(rawPath string) {
 			copyDemoAndPrintCommand(cfg, demoPath)
 		case "s":
 			settingsMenu(reader, &cfg)
+		case "u":
+			pendingUpdate = runManualUpdateCheck(reader)
+			gotUpdate = true
 		case "q":
 			return
 		default:
@@ -143,7 +182,8 @@ func settingsMenu(reader *bufio.Reader, cfg *config) {
 		fmt.Println("--- Settings ---")
 		fmt.Printf("1) Set game folder (current: %s)\n", displayOrNone(cfg.GameFolder))
 		fmt.Printf("2) Change keybinds (current: %s, %s, %s)\n", cfg.Keys[0], cfg.Keys[1], cfg.Keys[2])
-		fmt.Println("3) Back")
+		fmt.Printf("3) Auto-check for updates (current: %s)\n", onOff(cfg.CheckUpdates))
+		fmt.Println("4) Back")
 		fmt.Print("> ")
 
 		choice, _ := reader.ReadString('\n')
@@ -208,7 +248,14 @@ func settingsMenu(reader *bufio.Reader, cfg *config) {
 				continue
 			}
 			fmt.Println("Saved.")
-		case "3", "b", "":
+		case "3":
+			cfg.CheckUpdates = !cfg.CheckUpdates
+			if err := saveConfig(*cfg); err != nil {
+				fmt.Println("Failed to save settings:", err)
+				continue
+			}
+			fmt.Printf("Auto-check for updates: %s\n", onOff(cfg.CheckUpdates))
+		case "4", "b", "":
 			return
 		default:
 			fmt.Println("Unknown option.")

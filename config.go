@@ -7,12 +7,16 @@ import (
 )
 
 type config struct {
-	GameFolder string   `json:"gameFolder"`
-	Keys       []string `json:"keys"`
+	GameFolder   string   `json:"gameFolder"`
+	Keys         []string `json:"keys"`
+	CheckUpdates bool     `json:"checkUpdates"`
 }
 
 func defaultConfig() config {
-	return config{Keys: []string{"F5", "F6", "F7"}}
+	return config{
+		Keys:         []string{"F5", "F6", "F7"},
+		CheckUpdates: true,
+	}
 }
 
 func configPath() (string, error) {
@@ -42,18 +46,17 @@ func loadConfig() config {
 		return cfg
 	}
 
-	var loaded config
-	if err := json.Unmarshal(data, &loaded); err != nil {
-		return cfg
-	}
+	return parseConfig(data)
+}
 
-	if loaded.GameFolder != "" {
-		cfg.GameFolder = loaded.GameFolder
+func parseConfig(data []byte) config {
+	cfg := defaultConfig()
+	if err := json.Unmarshal(data, &cfg); err != nil {
+		return defaultConfig()
 	}
-	if len(loaded.Keys) == 3 {
-		cfg.Keys = loaded.Keys
+	if len(cfg.Keys) != 3 {
+		cfg.Keys = defaultConfig().Keys
 	}
-
 	return cfg
 }
 
