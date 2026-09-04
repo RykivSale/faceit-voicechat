@@ -10,6 +10,7 @@ type config struct {
 	GameFolder   string   `json:"gameFolder"`
 	Keys         []string `json:"keys"`
 	CheckUpdates bool     `json:"checkUpdates"`
+	MoveDemo     bool     `json:"moveDemo"`
 }
 
 func defaultConfig() config {

@@ -179,7 +179,7 @@ If a game folder is set, the demo is copied there and `playdemo <file>` is print
 Windows exe (what we ship):
 
 ```bash
-GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-X main.appVersion=1.2.5"
+GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-X main.appVersion=1.2.6"
 ```
 
 macOS / Linux: `go build .` then run the binary. Same local page.

@@ -128,6 +128,19 @@ func playdemoCommand(gameFolder, demoPath string) string {
 	return "playdemo " + rel
 }
 
+func consoleLine(bind, playdemo string) string {
+	bind = strings.TrimSpace(bind)
+	playdemo = strings.TrimSpace(playdemo)
+	switch {
+	case bind == "":
+		return playdemo
+	case playdemo == "":
+		return bind
+	default:
+		return bind + "; " + playdemo
+	}
+}
+
 func copyDemoToGameFolder(cfg config, demoPath string) (string, error) {
 	if cfg.GameFolder == "" {
 		return "", fmt.Errorf("game folder is not set")
@@ -147,12 +160,31 @@ func copyDemoToGameFolder(cfg config, demoPath string) (string, error) {
 		return src, nil
 	}
 	if _, err := os.Stat(dst); err == nil {
+		if cfg.MoveDemo {
+			_ = os.Remove(src)
+		}
+		return dst, nil
+	}
+	if cfg.MoveDemo {
+		if err := moveFile(src, dst); err != nil {
+			return "", err
+		}
 		return dst, nil
 	}
 	if err := copyFile(src, dst); err != nil {
 		return "", err
 	}
 	return dst, nil
+}
+
+func moveFile(src, dst string) error {
+	if err := os.Rename(src, dst); err == nil {
+		return nil
+	}
+	if err := copyFile(src, dst); err != nil {
+		return err
+	}
+	return os.Remove(src)
 }
 
 func demoInsideFolder(folder, demoPath string) bool {

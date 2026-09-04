@@ -15,8 +15,8 @@ import (
 
 // appVersion is the version of this build. Override at compile time with:
 //
-//	go build -ldflags "-X main.appVersion=1.2.5"
-var appVersion = "1.2.5"
+//	go build -ldflags "-X main.appVersion=1.2.6"
+var appVersion = "1.2.6"
 
 const (
 	githubOwner = "RykivSale"

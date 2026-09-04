@@ -187,6 +187,58 @@
       opacity: 0.5;
       cursor: not-allowed !important;
     }
+    .place-mode {
+      max-width: min(779px, 100%);
+    }
+    .place-kicker {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6c757d;
+      margin-bottom: 0.4rem;
+    }
+    .place-seg {
+      display: inline-flex;
+      padding: 3px;
+      gap: 3px;
+      background: #ececec;
+      border-radius: 10px;
+    }
+    .place-seg button {
+      border: 0;
+      background: transparent;
+      color: #444;
+      padding: 0.48rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 650;
+      line-height: 1.2;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .place-seg button:hover { color: #111; }
+    .place-seg button.is-on {
+      background: #1a1a1a;
+      color: #fff;
+    }
+    .place-seg button.is-on.place-danger {
+      background: #e00000;
+    }
+    .place-hint {
+      margin: 0.45rem 0 0;
+      color: #6c757d;
+      font-size: 0.86rem;
+    }
+    @media (min-width: 768px) {
+      .place-mode { max-width: min(779px, calc(100% - 193px)); }
+    }
+    @media (min-width: 1200px) {
+      .place-mode { max-width: min(862px, calc(100% - 221px)); }
+    }
     .folder-glow {
       border-color: #e00000 !important;
       box-shadow: 0 0 0 0.25rem rgba(224, 0, 0, 0.35);
@@ -349,6 +401,20 @@
         <div class="text-secondary mt-2" id="dropHint"></div>
       </div>
       <input id="file" type="file" accept=".dem,.zst" hidden />
+      <div class="place-mode mt-3" id="placeMode">
+        <div class="place-kicker" id="placeLabel"></div>
+        <div class="place-seg" role="radiogroup" aria-labelledby="placeLabel">
+          <button type="button" id="placeCopy" role="radio" aria-checked="true">
+            <i class="bi bi-copy" aria-hidden="true"></i>
+            <span id="placeCopyLabel"></span>
+          </button>
+          <button type="button" id="placeCut" class="place-danger" role="radio" aria-checked="false">
+            <i class="bi bi-scissors" aria-hidden="true"></i>
+            <span id="placeCutLabel"></span>
+          </button>
+        </div>
+        <p class="place-hint" id="placeHint"></p>
+      </div>
     </div>
 
     <div class="card shadow-sm mb-4 d-none" id="result">
@@ -365,9 +431,12 @@
           <div class="col-12 col-lg">
             <div class="cmd rounded p-3 h-100" id="bindCmd"></div>
           </div>
-          <div class="col-12 col-lg-auto d-grid">
+          <div class="col-12 col-lg-auto d-grid gap-2">
             <button class="btn btn-primary btn-lg" id="copyBind" type="button">
               <i class="bi bi-clipboard me-1"></i><span id="copyBindLabel"></span>
+            </button>
+            <button class="btn btn-dark btn-lg" id="launchCs2" type="button">
+              <i class="bi bi-play-fill me-1"></i><span id="launchCs2Label"></span>
             </button>
           </div>
         </div>
@@ -386,18 +455,6 @@
           </div>
         </div>
         <p class="text-secondary" id="bindHint"></p>
-        <h2 class="h6 text-uppercase text-secondary mt-4" id="tPlay"></h2>
-        <div class="row g-3 align-items-stretch mb-2">
-          <div class="col-12 col-lg">
-            <div class="cmd rounded p-3 h-100" id="playCmd"></div>
-          </div>
-          <div class="col-12 col-lg-auto d-grid">
-            <button class="btn btn-primary btn-lg" id="copyPlay" type="button">
-              <i class="bi bi-clipboard me-1"></i><span id="copyPlayLabel"></span>
-            </button>
-          </div>
-        </div>
-        <p class="text-secondary" id="playHint"></p>
       </div>
     </div>
 
@@ -532,21 +589,32 @@
         dropLoaded: "Демка загружена",
         dropReplace: "Нажми или перетащи другую — заменит текущую.",
         dropLocked: "Сначала укажи папку CS2 — без неё загрузка закрыта.",
-        bind: "Бинд в консоль CS2",
+        placeLabel: "Исходный файл",
+        placeCopy: "Копировать",
+        placeCut: "Вырезать",
+        placeHintCopy: "Демка копируется в папку CS2, исходный файл остаётся.",
+        placeHintCut: "Демка перемещается в папку CS2, исходный файл удаляется.",
+        bind: "Команда в консоль CS2",
         copy: "Копировать",
         copied: "Скопировано",
+        launchCs2: "Запустить CS2",
+        launching: "Запускаем…",
+        launchFail: "Не удалось запустить CS2",
         k0: "слушать CT",
         k1: "слушать T",
         k2: "слушать обе",
-        bindHint: "Открой консоль в CS2 клавишей ~ и вставь одну строку. После этого клавиши переключают, чьи голоса слышно на записи.",
-        play: "Команда playdemo",
-        playHint: "Вставь эту строку в консоль после бинда.",
+        bindHint: "Открой консоль в CS2 клавишей ~ и вставь эту одну строку — бинд и playdemo сразу. Потом F5/F6/F7 переключают, чьи голоса слышно.",
         copyDemo: "Скопировать демку в папку CS2",
         copiedTitle: "Демонстрация уже в папке с игрой!",
         copiedDemo: "Демка скопирована в папку игры — playdemo найдёт файл.",
-        copiedNext: "Запускай CS2 и вводи команды в консоль!",
+        copiedNext: "Жми «Запустить CS2», потом вставь строку в консоль (~).",
         notCopied: "Папка CS2 не задана, поэтому демка не скопирована.",
         copyFail: "Не удалось скопировать демку",
+        movedTitle: "Демонстрация уже в папке с игрой!",
+        movedDemo: "Демка перемещена в папку игры — playdemo найдёт файл.",
+        notMoved: "Папка CS2 не задана, поэтому демка не перемещена.",
+        moveFail: "Не удалось переместить демку",
+        moveDemo: "Переместить демку в папку CS2",
         games: "Прошлые игры",
         gamesHint: "Демки из выбранной папки CS2. Счёт спрятан под спойлер.",
         gamesEmpty: "В папке пока нет .dem файлов.",
@@ -579,8 +647,8 @@
         howItems: [
           "Если папка CS2 ещё не сохранена — на старте откроется окно. Нажми «Найти CS2» или выбери папку в проводнике.",
           "Потом открой демку на этой странице (или через ПКМ → Open with на .dem).",
-          "Скопируй бинд, в игре нажми ~ и вставь в консоль.",
-          "Вставь playdemo … в консоль. Клавишами: слушать CT, T или обе. Сменить папку можно в Настройках."
+          "Скопируй одну строку, в игре нажми ~ и вставь в консоль. Клавишами: слушать CT, T или обе.",
+          "Запусти CS2 кнопкой на этой странице. Папку можно сменить в Настройках."
         ],
         overlay: "Читаем демку, это может занять минуту…",
         quitDone: "Сервер остановлен, вкладку можно закрыть.",
@@ -600,21 +668,32 @@
         dropLoaded: "Demo loaded",
         dropReplace: "Click or drop another file to replace it.",
         dropLocked: "Set the CS2 folder first — uploads stay locked until then.",
-        bind: "CS2 console bind",
+        placeLabel: "Original file",
+        placeCopy: "Copy",
+        placeCut: "Cut",
+        placeHintCopy: "The demo is copied into the CS2 folder. The original file stays.",
+        placeHintCut: "The demo is moved into the CS2 folder. The original file is deleted.",
+        bind: "CS2 console command",
         copy: "Copy",
         copied: "Copied",
+        launchCs2: "Launch CS2",
+        launching: "Launching…",
+        launchFail: "Could not launch CS2",
         k0: "listen CT",
         k1: "listen T",
         k2: "listen both",
-        bindHint: "Open the CS2 console with ~ and paste this single line. The keys then switch which team you hear in the demo.",
-        play: "playdemo command",
-        playHint: "Paste this line into the console after the bind.",
+        bindHint: "Open the CS2 console with ~ and paste this single line — bind and playdemo together. Then F5/F6/F7 switch which team you hear.",
         copyDemo: "Copy demo into the CS2 folder",
         copiedTitle: "The demo is already in the game folder!",
         copiedDemo: "Demo copied into the game folder — playdemo will find the file.",
-        copiedNext: "Launch CS2 and paste the commands in the console!",
+        copiedNext: "Hit Launch CS2, then paste the line into the console (~).",
         notCopied: "Game folder is not set, so the demo was not copied.",
         copyFail: "Could not copy the demo",
+        movedTitle: "The demo is already in the game folder!",
+        movedDemo: "Demo moved into the game folder — playdemo will find the file.",
+        notMoved: "Game folder is not set, so the demo was not moved.",
+        moveFail: "Could not move the demo",
+        moveDemo: "Move demo into the CS2 folder",
         games: "Past games",
         gamesHint: "Demos from the selected CS2 folder. The score stays behind a spoiler.",
         gamesEmpty: "No .dem files in this folder yet.",
@@ -647,8 +726,8 @@
         howItems: [
           "If the CS2 folder is not saved yet, a window opens on start. Click Find CS2 or pick a folder.",
           "Then open a demo here (or right-click a .dem → Open with this app).",
-          "Copy the bind, press ~ in-game, and paste it into the console.",
-          "Paste playdemo … in the console. Change the folder later in Settings."
+          "Copy the one-line command, press ~ in-game, and paste it. Keys switch CT, T, or both.",
+          "Launch CS2 with the button on this page. Change the folder later in Settings."
         ],
         overlay: "Reading the demo, this can take a minute…",
         quitDone: "Server stopped. You can close this tab.",
@@ -675,6 +754,18 @@
     const $ = (id) => document.getElementById(id);
     function t() { return i18n[lang]; }
     function hasFolder() { return !!(state && state.config && state.config.gameFolder); }
+    function moveMode() { return !!(state && state.config && state.config.moveDemo); }
+
+    function paintPlaceMode() {
+      const cut = moveMode();
+      const x = t();
+      $("placeCopy").classList.toggle("is-on", !cut);
+      $("placeCut").classList.toggle("is-on", cut);
+      $("placeCopy").setAttribute("aria-checked", String(!cut));
+      $("placeCut").setAttribute("aria-checked", String(cut));
+      $("placeHint").textContent = cut ? x.placeHintCut : x.placeHintCopy;
+      $("copyDemoBtn").textContent = cut ? x.moveDemo : x.copyDemo;
+    }
 
     function applyLang() {
       const x = t();
@@ -684,16 +775,16 @@
       $("quitLabel").textContent = x.quit;
       $("tGate").textContent = x.gate;
       $("tDemo").textContent = x.demo;
+      $("placeLabel").textContent = x.placeLabel;
+      $("placeCopyLabel").textContent = x.placeCopy;
+      $("placeCutLabel").textContent = x.placeCut;
       $("tBind").textContent = x.bind;
       $("copyBindLabel").textContent = x.copy;
+      $("launchCs2Label").textContent = x.launchCs2;
       $("k0h").textContent = x.k0;
       $("k1h").textContent = x.k1;
       $("k2h").textContent = x.k2;
       $("bindHint").textContent = x.bindHint;
-      $("tPlay").textContent = x.play;
-      $("playHint").textContent = x.playHint;
-      $("copyPlayLabel").textContent = x.copy;
-      $("copyDemoBtn").textContent = x.copyDemo;
       $("tGames").textContent = x.games;
       $("gamesHint").textContent = x.gamesHint;
       $("gamesRefreshLabel").textContent = x.gamesRefresh;
@@ -723,6 +814,7 @@
       $("langEn").classList.toggle("btn-outline-dark", lang !== "en");
       $("dropTitle").textContent = x.dropTitle;
       $("dropHint").textContent = hasFolder() ? x.dropHint : x.dropLocked;
+      paintPlaceMode();
       paintUpdate();
       if (state) render(state);
     }
@@ -812,6 +904,7 @@
       $("drop").classList.toggle("drop-loaded", !!s.demo.loaded);
       $("drop").setAttribute("aria-disabled", gated ? "true" : "false");
       $("settingsSummary").textContent = folder ? shortPath(folder) : "";
+      paintPlaceMode();
 
       if (s.demo.loaded) {
         $("dropIcon").innerHTML = '<i class="bi bi-check-circle-fill"></i>';
@@ -837,12 +930,12 @@
       const showResult = s.demo.loaded && !gated;
       $("result").classList.toggle("d-none", !showResult);
       if (s.demo.loaded) {
-        $("bindCmd").textContent = s.demo.bind.replace(/; bind /g, ";\nbind ");
-        $("bindCmd").dataset.raw = s.demo.bind;
-        $("playCmd").textContent = s.demo.playdemo;
+        const cut = moveMode();
+        $("bindCmd").textContent = s.demo.console;
+        $("bindCmd").dataset.raw = s.demo.console;
         if (s.demo.copied) {
           $("copyBanner").classList.remove("is-error");
-          $("copyBannerTitle").textContent = x.copiedTitle;
+          $("copyBannerTitle").textContent = cut ? x.movedTitle : x.copiedTitle;
           $("copyBannerText").textContent = "";
           $("copyBannerText").classList.add("d-none");
           $("copyBannerPath").classList.remove("d-none");
@@ -851,7 +944,7 @@
           $("copyDemoBtn").classList.add("d-none");
         } else if (!folder) {
           $("copyBanner").classList.add("is-error");
-          $("copyBannerTitle").textContent = x.notCopied;
+          $("copyBannerTitle").textContent = cut ? x.notMoved : x.notCopied;
           $("copyBannerText").textContent = "";
           $("copyBannerText").classList.add("d-none");
           $("copyBannerPath").classList.add("d-none");
@@ -860,7 +953,7 @@
           $("copyDemoBtn").classList.add("d-none");
         } else {
           $("copyBanner").classList.add("is-error");
-          $("copyBannerTitle").textContent = s.demo.copyError ? x.copyFail : x.notCopied;
+          $("copyBannerTitle").textContent = s.demo.copyError ? (cut ? x.moveFail : x.copyFail) : (cut ? x.notMoved : x.notCopied);
           $("copyBannerText").textContent = s.demo.copyError || "";
           $("copyBannerText").classList.toggle("d-none", !s.demo.copyError);
           $("copyBannerPath").classList.add("d-none");
@@ -1148,7 +1241,23 @@
       if ($("file").files[0]) uploadFile($("file").files[0]);
     });
     $("copyBind").addEventListener("click", () => copyText($("bindCmd").dataset.raw || $("bindCmd").textContent, "copyBindLabel"));
-    $("copyPlay").addEventListener("click", () => copyText($("playCmd").textContent, "copyPlayLabel"));
+    $("launchCs2").addEventListener("click", async () => {
+      const btn = $("launchCs2");
+      const label = $("launchCs2Label");
+      const old = label.textContent;
+      btn.disabled = true;
+      label.textContent = t().launching;
+      try {
+        await api("/api/launch", { method: "POST" });
+      } catch (e) {
+        $("banners").innerHTML = banner("err", t().launchFail + ": " + escapeHtml(e.message));
+      } finally {
+        label.textContent = old;
+        btn.disabled = false;
+      }
+    });
+    $("placeCopy").addEventListener("click", () => saveConfig({ moveDemo: false }));
+    $("placeCut").addEventListener("click", () => saveConfig({ moveDemo: true }));
     $("copyDemoBtn").addEventListener("click", async () => {
       try { render(await api("/api/copy", { method: "POST" })); }
       catch (e) { $("copyBannerText").textContent = t().err + ": " + e.message; }

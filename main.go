@@ -159,7 +159,11 @@ func copyDemoAndPrintCommand(cfg config, demoPath string) {
 
 	if cfg.GameFolder == "" {
 		fmt.Println()
-		fmt.Println("Game folder isn't set, so the demo wasn't copied (press S -> 1 to set it).")
+		if cfg.MoveDemo {
+			fmt.Println("Game folder isn't set, so the demo wasn't moved (press S -> 1 to set it).")
+		} else {
+			fmt.Println("Game folder isn't set, so the demo wasn't copied (press S -> 1 to set it).")
+		}
 		fmt.Printf("playdemo %s\n", name)
 		return
 	}
@@ -167,12 +171,20 @@ func copyDemoAndPrintCommand(cfg config, demoPath string) {
 	dst, err := copyDemoToGameFolder(cfg, demoPath)
 	if err != nil {
 		fmt.Println()
-		fmt.Println("Failed to copy demo to game folder:", err)
+		if cfg.MoveDemo {
+			fmt.Println("Failed to move demo to game folder:", err)
+		} else {
+			fmt.Println("Failed to copy demo to game folder:", err)
+		}
 		return
 	}
 
 	fmt.Println()
-	fmt.Printf("Demo copied to: %s\n", dst)
+	if cfg.MoveDemo {
+		fmt.Printf("Demo moved to: %s\n", dst)
+	} else {
+		fmt.Printf("Demo copied to: %s\n", dst)
+	}
 	fmt.Printf("playdemo %s\n", name)
 }
 

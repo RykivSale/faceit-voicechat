@@ -28,18 +28,19 @@ const maxDemoUpload = 1 << 30 // 1 GiB
 var errBadFolder = errors.New("that folder does not exist")
 
 type webApp struct {
-	mu       sync.Mutex
-	cfg      config
-	demoName string
-	demoPath string
-	ctMask   uint32
-	tMask    uint32
-	parsed   bool
-	parseErr string
-	copied   bool
-	copiedTo string
-	copyErr  string
-	cleanup  func()
+	mu         sync.Mutex
+	cfg        config
+	demoName   string
+	demoPath   string
+	sourcePath string
+	ctMask     uint32
+	tMask      uint32
+	parsed     bool
+	parseErr   string
+	copied     bool
+	copiedTo   string
+	copyErr    string
+	cleanup    func()
 
 	shutdown     chan struct{}
 	shutdownOnce sync.Once
@@ -58,6 +59,7 @@ type demoView struct {
 	Error    string `json:"error"`
 	Bind     string `json:"bind"`
 	Playdemo string `json:"playdemo"`
+	Console  string `json:"console"`
 	Copied   bool   `json:"copied"`
 	CopiedTo string `json:"copiedTo"`
 	CopyErr  string `json:"copyError"`
@@ -116,6 +118,7 @@ func runWeb(rawPath string) {
 	mux.HandleFunc("/api/games/score", app.handleGameScore)
 	mux.HandleFunc("/api/games/open", app.handleGameOpen)
 	mux.HandleFunc("/api/update", app.handleUpdate)
+	mux.HandleFunc("/api/launch", app.handleLaunch)
 	mux.HandleFunc("/api/quit", app.handleQuit)
 
 	srv := &http.Server{Handler: mux}
@@ -328,6 +331,7 @@ func (a *webApp) handleConfig(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		GameFolder *string  `json:"gameFolder"`
 		Keys       []string `json:"keys"`
+		MoveDemo   *bool    `json:"moveDemo"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w, "invalid json", http.StatusBadRequest)
@@ -342,6 +346,9 @@ func (a *webApp) handleConfig(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+	}
+	if body.MoveDemo != nil {
+		a.cfg.MoveDemo = *body.MoveDemo
 	}
 	if len(body.Keys) > 0 {
 		if len(body.Keys) != 3 {
@@ -401,6 +408,21 @@ func (a *webApp) handleUpdate(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, toUpdateView(checkUpdatesFn()))
 }
 
+func (a *webApp) handleLaunch(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	a.mu.Lock()
+	folder := a.cfg.GameFolder
+	a.mu.Unlock()
+	if err := launchCS2Fn(folder); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, map[string]bool{"ok": true})
+}
+
 func (a *webApp) handleQuit(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -431,6 +453,7 @@ func (a *webApp) loadFromPath(rawPath, displayName string) error {
 	defer a.mu.Unlock()
 	a.clearDemoLocked()
 	a.demoPath = demoPath
+	a.sourcePath = rawPath
 	a.demoName = displayName
 	a.ctMask = ctMask
 	a.tMask = tMask
@@ -454,6 +477,13 @@ func (a *webApp) tryCopyLocked() {
 		a.copyErr = err.Error()
 		return
 	}
+	if a.cfg.MoveDemo {
+		if a.sourcePath != "" && filepath.Clean(a.sourcePath) != filepath.Clean(dst) && !demoInsideFolder(a.cfg.GameFolder, a.sourcePath) {
+			_ = os.Remove(a.sourcePath)
+		}
+		a.demoPath = dst
+		a.sourcePath = dst
+	}
 	a.copied = true
 	a.copiedTo = dst
 	a.copyErr = ""
@@ -472,6 +502,7 @@ func (a *webApp) clearDemoLocked() {
 	}
 	a.demoName = ""
 	a.demoPath = ""
+	a.sourcePath = ""
 	a.ctMask = 0
 	a.tMask = 0
 	a.parsed = false
@@ -503,6 +534,7 @@ func (a *webApp) snapshotLocked() stateResponse {
 			src = a.copiedTo
 		}
 		view.Playdemo = playdemoCommand(a.cfg.GameFolder, src)
+		view.Console = consoleLine(view.Bind, view.Playdemo)
 	}
 	looksLike := a.cfg.GameFolder == "" || looksLikeCSGOFolder(a.cfg.GameFolder)
 	return stateResponse{

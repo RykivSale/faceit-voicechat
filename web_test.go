@@ -39,6 +39,15 @@ func TestHandleIndexIncludesAPIAndAssets(t *testing.T) {
 	if !strings.Contains(body, "/api/update") || !strings.Contains(body, `id="updateBanner"`) {
 		t.Fatal("index html should load the update banner")
 	}
+	if !strings.Contains(body, `id="launchCs2"`) || !strings.Contains(body, "/api/launch") {
+		t.Fatal("index html should have a Launch CS2 button")
+	}
+	if !strings.Contains(body, `id="placeLabel"`) || !strings.Contains(body, `id="placeCopy"`) || !strings.Contains(body, `id="placeCut"`) {
+		t.Fatal("index html should have a keep/delete original-file control")
+	}
+	if strings.Contains(body, `id="playCmd"`) || strings.Contains(body, `id="copyPlay"`) {
+		t.Fatal("bind and playdemo should be one console line, not two cards")
+	}
 }
 
 func TestHandleStateEmpty(t *testing.T) {
@@ -86,6 +95,9 @@ func TestHandleStateWithDemo(t *testing.T) {
 	}
 	if !strings.Contains(got.Demo.Bind, `bind "F5"`) {
 		t.Fatalf("bind=%s", got.Demo.Bind)
+	}
+	if got.Demo.Console != got.Demo.Bind+"; "+got.Demo.Playdemo {
+		t.Fatalf("console=%q", got.Demo.Console)
 	}
 }
 
@@ -147,6 +159,34 @@ func TestHandleConfigSavesKeys(t *testing.T) {
 	}
 	if got.Config.Keys[0] != "KP_INS" || got.Config.Keys[2] != "KP_END" {
 		t.Fatalf("keys=%v", got.Config.Keys)
+	}
+}
+
+func TestHandleConfigSavesMoveDemo(t *testing.T) {
+	dir := t.TempDir()
+	old := configPathFn
+	configPathFn = func() (string, error) {
+		return filepath.Join(dir, "config.json"), nil
+	}
+	t.Cleanup(func() { configPathFn = old })
+
+	app := &webApp{cfg: defaultConfig(), shutdown: make(chan struct{})}
+	r := httptest.NewRequest(http.MethodPost, "/api/config", strings.NewReader(`{"moveDemo":true}`))
+	w := httptest.NewRecorder()
+	app.handleConfig(w, r)
+	if w.Code != 200 {
+		t.Fatalf("status %d body=%s", w.Code, w.Body.String())
+	}
+	var got stateResponse
+	if err := json.Unmarshal(w.Body.Bytes(), &got); err != nil {
+		t.Fatal(err)
+	}
+	if !got.Config.MoveDemo {
+		t.Fatal("expected moveDemo true")
+	}
+	saved := loadConfig()
+	if !saved.MoveDemo {
+		t.Fatal("expected moveDemo to persist")
 	}
 }
 
@@ -324,3 +364,23 @@ func TestHandleUpdateSkippedWhenDisabled(t *testing.T) {
 	}
 }
 
+func TestHandleLaunchCS2(t *testing.T) {
+	old := launchCS2Fn
+	var gotFolder string
+	launchCS2Fn = func(folder string) error {
+		gotFolder = folder
+		return nil
+	}
+	t.Cleanup(func() { launchCS2Fn = old })
+
+	app := &webApp{cfg: config{GameFolder: `/game/csgo`}, shutdown: make(chan struct{})}
+	r := httptest.NewRequest(http.MethodPost, "/api/launch", nil)
+	w := httptest.NewRecorder()
+	app.handleLaunch(w, r)
+	if w.Code != 200 {
+		t.Fatalf("status %d body=%s", w.Code, w.Body.String())
+	}
+	if gotFolder != `/game/csgo` {
+		t.Fatalf("folder=%q", gotFolder)
+	}
+}
